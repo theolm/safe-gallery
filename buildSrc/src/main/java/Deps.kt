@@ -9,6 +9,7 @@ object Deps {
     val accompanistPermissions by lazy { "com.google.accompanist:accompanist-permissions:${Versions.accompanist}" }
     val accompanistWebview by lazy { "com.google.accompanist:accompanist-webview:${Versions.accompanist}" }
     val accompanistSystemUiController by lazy { "com.google.accompanist:accompanist-systemuicontroller:${Versions.accompanist}" }
+    val biometric by lazy { "androidx.biometric:biometric-ktx:${Versions.biometric}" }
     val composeBom by lazy { "androidx.compose:compose-bom:${Versions.androidxComposeBom}" }
     val composeFoundation by lazy { "androidx.compose.foundation:foundation" }
     val composeMaterialIconsExtended by lazy { "androidx.compose.material:material-icons-extended" }

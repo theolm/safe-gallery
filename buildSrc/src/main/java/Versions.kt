@@ -11,6 +11,7 @@ object Versions {
     const val accompanist = "0.28.0"
     const val androidxComposeBom = "2022.12.00"
     const val androidxComposeMaterial3 = "1.1.0-alpha03"
+    const val biometric = "1.2.0-alpha05"
     const val composeLiveData = "1.3.2"
     const val composeNavigation = "2.5.3"
     const val hilt = "2.44"
@@ -20,5 +21,4 @@ object Versions {
     const val kspVersion = "1.7.20-1.0.8"
     const val composeDestination = "1.8.33-beta"
     const val junit = "4.13.2"
-
 }

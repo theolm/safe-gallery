@@ -96,6 +96,7 @@ dependencies {
     implementation(Deps.composeWindowSizeClass)
     implementation(Deps.composeRuntime)
     implementation(Deps.composeLiveData)
+    implementation(Deps.biometric)
     implementation(Deps.hiltAndroid)
     implementation(Deps.hiltNavCompose)
     kapt(Deps.hiltCompiler)
