@@ -4,6 +4,7 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import kotlinx.coroutines.suspendCancellableCoroutine
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -14,25 +15,23 @@ internal interface BiometricAuth {
 
 internal class BiometricAuthImpl @Inject constructor() : BiometricAuth {
     override suspend fun authenticate(activity: FragmentActivity): AuthResponse =
-        suspendCoroutine { continuation ->
+        suspendCancellableCoroutine { continuation ->
 
             val executor = ContextCompat.getMainExecutor(activity)
 
             val bioCallback = object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
-                    continuation.resume(AuthResponse.AuthenticationError(errorCode, errString))
+                    if (continuation.isActive) {
+                        continuation.resume(AuthResponse.AuthenticationError(errorCode, errString))
+                    }
                 }
 
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
-                    continuation.resume(AuthResponse.AuthenticationSucceeded)
-                }
-
-                override fun onAuthenticationFailed() {
-                    super.onAuthenticationFailed()
-                    continuation.resume(AuthResponse.AuthenticationFailed)
-
+                    if (continuation.isActive) {
+                        continuation.resume(AuthResponse.AuthenticationSucceeded)
+                    }
                 }
             }
 

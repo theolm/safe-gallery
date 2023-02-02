@@ -5,9 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Button
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -19,6 +17,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.theolm.core.data.LockState
 
 @RootNavGraph(start = true)
 @Destination
@@ -27,23 +26,18 @@ fun HomePage(
     navigator: DestinationsNavigator,
     viewModel: HomePageViewModel = hiltViewModel(),
 ) {
+    val state by viewModel.lockState.collectAsState(initial = LockState.LOCK)
     val context = LocalContext.current
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
-        if (viewModel.isUnLocked) {
+        if (state == LockState.UNLOCK) {
             UnlockedScreen()
         } else {
             LockedScreen {
                 viewModel.askBiometric(context)
             }
-        }
-    }
-
-    OnLifecycleEvent { _, event ->
-        if (event == Lifecycle.Event.ON_RESUME) {
-            viewModel.lock()
         }
     }
 }
@@ -62,23 +56,5 @@ fun LockedScreen(onClick: () -> Unit) {
 fun UnlockedScreen() {
     Column {
         Text(text = "Unlocked!!!")
-    }
-}
-
-@Composable
-fun OnLifecycleEvent(onEvent: (owner: LifecycleOwner, event: Lifecycle.Event) -> Unit) {
-    val eventHandler = rememberUpdatedState(onEvent)
-    val lifecycleOwner = rememberUpdatedState(LocalLifecycleOwner.current)
-
-    DisposableEffect(lifecycleOwner.value) {
-        val lifecycle = lifecycleOwner.value.lifecycle
-        val observer = LifecycleEventObserver { owner, event ->
-            eventHandler.value(owner, event)
-        }
-
-        lifecycle.addObserver(observer)
-        onDispose {
-            lifecycle.removeObserver(observer)
-        }
     }
 }

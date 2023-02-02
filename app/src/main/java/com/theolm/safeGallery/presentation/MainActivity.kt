@@ -10,12 +10,20 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.FragmentActivity
 import com.ramcosta.composedestinations.DestinationsNavHost
+import com.theolm.core.data.AppAuthState
 import com.theolm.safeGallery.presentation.ui.page.home.NavGraphs
 import com.theolm.safeGallery.presentation.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : FragmentActivity() {
+    private val scope = MainScope()
+
+    @Inject
+    lateinit var appAuthState: AppAuthState
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +39,13 @@ class MainActivity : FragmentActivity() {
                     DestinationsNavHost(navGraph = NavGraphs.root)
                 }
             }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        scope.launch {
+            appAuthState.lock()
         }
     }
 }
