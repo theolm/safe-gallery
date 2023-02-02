@@ -16,3 +16,4 @@ rootProject.name = "SafeGallery"
 include(":app")
 include(":color")
 include(":core")
+include(":biometric")

@@ -75,6 +75,7 @@ kotlin {
 dependencies {
     implementation(project(":color"))
     implementation(project(":core"))
+    implementation(project(":biometric"))
 
     implementation(Deps.coreKtx)
     implementation(Deps.appCompat)
@@ -96,7 +97,6 @@ dependencies {
     implementation(Deps.composeWindowSizeClass)
     implementation(Deps.composeRuntime)
     implementation(Deps.composeLiveData)
-    implementation(Deps.biometric)
     implementation(Deps.hiltAndroid)
     implementation(Deps.hiltNavCompose)
     kapt(Deps.hiltCompiler)
