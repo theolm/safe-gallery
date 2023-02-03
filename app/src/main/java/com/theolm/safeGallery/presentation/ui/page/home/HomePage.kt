@@ -18,6 +18,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.theolm.core.data.LockState
+import com.theolm.safeGallery.presentation.ui.page.messages.MessagePage
 
 @RootNavGraph(start = true)
 @Destination
@@ -32,8 +33,9 @@ fun HomePage(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
-        if (state == LockState.UNLOCK) {
-            UnlockedScreen()
+        if (state == LockState.UNLOCK || true) {
+//            UnlockedScreen()
+            MessagePage()
         } else {
             LockedScreen {
                 viewModel.askBiometric(context)
@@ -49,12 +51,5 @@ fun LockedScreen(onClick: () -> Unit) {
         Button(onClick = onClick) {
             Text(text = "Unlock with fingerprint")
         }
-    }
-}
-
-@Composable
-fun UnlockedScreen() {
-    Column {
-        Text(text = "Unlocked!!!")
     }
 }
