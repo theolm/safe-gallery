@@ -4,27 +4,42 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.theolm.core.data.SafeMessage
+import com.theolm.core.usecase.GetSafeMessagesUseCase
+import com.theolm.core.usecase.SaveSafeMessagesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
-class MessageViewModel @Inject constructor() : ViewModel() {
+class MessageViewModel @Inject constructor(
+    getSafeMessagesUseCase: GetSafeMessagesUseCase,
+    private val saveSafeMessagesUseCase: SaveSafeMessagesUseCase,
+) : ViewModel() {
+    val messageFlow = getSafeMessagesUseCase.getFlow()
     var uiState by mutableStateOf(MessagePageUiState())
 
     fun onUpdateMessage(message: String) {
-        uiState = uiState.copy(message = message)
+        uiState = uiState.copy(inputMessage = message)
     }
 
     fun onSaveMessage() {
-        val newMessage = uiState.message
-        uiState = uiState.copy(
-            message = "",
-            messageList = uiState.messageList.toMutableList().apply { add(newMessage) }
-        )
+        viewModelScope.launch {
+            val newMessage = uiState.inputMessage
+            val date = Date().time
+            saveSafeMessagesUseCase.save(
+                SafeMessage(
+                    message = newMessage,
+                    createdAt = date,
+                    updatedAt = date,
+                )
+            )
+
+            uiState = MessagePageUiState()
+        }
     }
 }
 
-data class MessagePageUiState(
-    val message: String = "",
-    val messageList: List<String> = listOf()
-)
+data class MessagePageUiState(val inputMessage: String = "")
