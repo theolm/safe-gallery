@@ -6,8 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Modifier
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
 import androidx.fragment.app.FragmentActivity
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.theolm.core.data.AppAuthState
@@ -27,12 +25,6 @@ class MainActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { v, insets ->
-            v.setPadding(0, 0, 0, 0)
-            insets
-        }
-
         setContent {
             AppTheme {
                 Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {

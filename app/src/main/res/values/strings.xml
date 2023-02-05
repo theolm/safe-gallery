@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Safe Gallery</string>
+    <string name="placeholder_message_input">Type your note</string>
+    <string name="last_modified">Last modified: </string>
 </resources>

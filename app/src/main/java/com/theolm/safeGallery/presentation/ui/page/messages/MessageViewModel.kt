@@ -18,6 +18,7 @@ class MessageViewModel @Inject constructor() : ViewModel() {
     fun onSaveMessage() {
         val newMessage = uiState.message
         uiState = uiState.copy(
+            message = "",
             messageList = uiState.messageList.toMutableList().apply { add(newMessage) }
         )
     }
