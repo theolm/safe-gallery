@@ -3,7 +3,7 @@ package com.theolm.safeGallery.presentation.ui.page.messages
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -46,15 +46,17 @@ fun MessagePage(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
-                contentPadding = PaddingValues(vertical = 32.dp, horizontal = 16.dp)
+                contentPadding = PaddingValues(vertical = 32.dp)
             ) {
-                items(messageList) {
+                itemsIndexed(messageList) { index, it ->
                     MessageBubble(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         message = it.message,
-                        lastModified = Date(it.updatedAt)
+                        lastModified = Date(it.updatedAt),
+                        isExpanded = uiState.expandedMessage == index,
+                        onClick = {
+                            viewModel.onMessageClick(index)
+                        }
                     )
                 }
             }

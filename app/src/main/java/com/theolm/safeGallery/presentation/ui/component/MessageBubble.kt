@@ -1,20 +1,21 @@
 package com.theolm.safeGallery.presentation.ui.component
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.theolm.safeGallery.presentation.ui.theme.PreviewThemeDark
-import com.theolm.safeGallery.presentation.ui.theme.PreviewThemeLight
 import com.theolm.safeGallery.R
 import com.theolm.safeGallery.extensions.toDateAndTime
+import com.theolm.safeGallery.presentation.ui.theme.PreviewThemeDark
+import com.theolm.safeGallery.presentation.ui.theme.PreviewThemeLight
 import java.util.*
 
 
@@ -24,11 +25,18 @@ private const val mockMessage =
             "efficitur libero vel, ornare ex. Cras aliquet ex vitae faucibus fermentum. " +
             "Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus."
 
+private const val messageMaxLines = 10000
+private const val messageMinLines = 4
+
 @Preview
 @Composable
 private fun PreviewLight() {
     PreviewThemeLight {
-        MessageBubble(message = mockMessage, lastModified = Date())
+        MessageBubble(
+            message = mockMessage,
+            lastModified = Date(),
+            isExpanded = true,
+        )
     }
 }
 
@@ -36,25 +44,41 @@ private fun PreviewLight() {
 @Composable
 private fun PreviewDark() {
     PreviewThemeDark {
-        MessageBubble(message = mockMessage, lastModified = Date())
+        MessageBubble(
+            message = mockMessage,
+            lastModified = Date(),
+            isExpanded = true,
+        )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MessageBubble(
     modifier: Modifier = Modifier,
     message: String,
-    lastModified: Date
+    lastModified: Date,
+    isExpanded: Boolean,
+    onClick: () -> Unit = {}
 ) {
+    val elevation by animateDpAsState(targetValue = if (isExpanded) 4.dp else 0.dp)
+    val maxLines by animateIntAsState(targetValue = if (isExpanded) messageMaxLines else messageMinLines)
 
     Card(
-        modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        modifier = modifier
+            .fillMaxWidth()
+            .animateContentSize()
+            .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 8.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = elevation),
+        onClick = onClick,
     ) {
         Column(Modifier.padding(16.dp)) {
             Text(
-                text = message,
-                style = MaterialTheme.typography.bodyLarge
+                modifier = Modifier.fillMaxWidth(),
+                text = message + message + message + message,
+                style = MaterialTheme.typography.bodyLarge,
+                maxLines = maxLines,
+                overflow = TextOverflow.Ellipsis,
             )
 
             Text(

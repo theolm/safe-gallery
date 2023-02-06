@@ -40,6 +40,20 @@ class MessageViewModel @Inject constructor(
             uiState = MessagePageUiState()
         }
     }
+
+    fun onMessageClick(index: Int) {
+        val selectedIndex =
+            if (uiState.expandedMessage == index) {
+                -1
+            } else {
+                index
+            }
+
+        uiState = uiState.copy(expandedMessage = selectedIndex)
+    }
 }
 
-data class MessagePageUiState(val inputMessage: String = "")
+data class MessagePageUiState(
+    val inputMessage: String = "",
+    val expandedMessage: Int = -1,
+)
