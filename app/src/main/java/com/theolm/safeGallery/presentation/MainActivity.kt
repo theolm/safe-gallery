@@ -3,6 +3,8 @@ package com.theolm.safeGallery.presentation
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.fragment.app.FragmentActivity
@@ -19,15 +21,18 @@ class MainActivity : FragmentActivity() {
     private val scope = MainScope()
     private val viewModel: MainViewModel by viewModels()
 
+    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             val state by viewModel.lockState.collectAsState(initial = LockState.LOCK)
             AppTheme {
-                if (state == LockState.UNLOCK) {
-                    HomePage()
-                } else {
-                    LockedPage()
+                AnimatedContent(targetState = state) {
+                    if (it == LockState.UNLOCK) {
+                        HomePage()
+                    } else {
+                        LockedPage()
+                    }
                 }
             }
         }
