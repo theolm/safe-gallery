@@ -3,6 +3,8 @@ package com.theolm.safeGallery.presentation.ui.component
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -52,14 +54,15 @@ private fun PreviewDark() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MessageBubble(
     modifier: Modifier = Modifier,
     message: String,
     lastModified: Date,
     isExpanded: Boolean,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    onLongClick: () -> Unit = {},
 ) {
     val elevation by animateDpAsState(targetValue = if (isExpanded) 4.dp else 0.dp)
     val maxLines by animateIntAsState(targetValue = if (isExpanded) messageMaxLines else messageMinLines)
@@ -68,9 +71,12 @@ fun MessageBubble(
         modifier = modifier
             .fillMaxWidth()
             .animateContentSize()
-            .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 8.dp),
+            .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 8.dp)
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick,
+            ),
         elevation = CardDefaults.cardElevation(defaultElevation = elevation),
-        onClick = onClick,
     ) {
         Column(Modifier.padding(16.dp)) {
             Text(

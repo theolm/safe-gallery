@@ -51,9 +51,18 @@ class MessageViewModel @Inject constructor(
 
         uiState = uiState.copy(expandedMessage = selectedIndex)
     }
+
+    fun openAlertForMessage(message: SafeMessage) {
+        uiState = uiState.copy(openOptionAlert = message)
+    }
+
+    fun closeAlert() {
+        uiState = uiState.copy(openOptionAlert = null)
+    }
 }
 
 data class MessagePageUiState(
     val inputMessage: String = "",
     val expandedMessage: Int = -1,
+    val openOptionAlert: SafeMessage? = null,
 )
