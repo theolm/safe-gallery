@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.FabPosition
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -34,37 +35,9 @@ fun MessagePage(
             .fillMaxSize()
             .imePadding(),
         backgroundColor = MaterialTheme.colorScheme.background,
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .navigationBarsPadding(),
-            verticalArrangement = Arrangement.Bottom
-        ) {
-
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                contentPadding = PaddingValues(vertical = 32.dp)
-            ) {
-                itemsIndexed(messageList) { index, it ->
-                    MessageBubble(
-                        modifier = Modifier.fillMaxWidth(),
-                        message = it.message,
-                        lastModified = Date(it.updatedAt),
-                        isExpanded = uiState.expandedMessage == index,
-                        onClick = {
-                            viewModel.onMessageClick(index)
-                        }
-                    )
-                }
-            }
-
+        floatingActionButton = {
             MessageInput(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .padding(bottom = 8.dp),
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
                 message = uiState.inputMessage,
                 onMessageChange = {
                     viewModel.onUpdateMessage(it)
@@ -73,7 +46,26 @@ fun MessagePage(
                     viewModel.onSaveMessage()
                 }
             )
+        },
+        floatingActionButtonPosition = FabPosition.Center,
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .navigationBarsPadding(),
+            contentPadding = PaddingValues(top = 32.dp, bottom = 100.dp)
+        ) {
+            itemsIndexed(messageList) { index, it ->
+                MessageBubble(
+                    modifier = Modifier.fillMaxWidth(),
+                    message = it.message,
+                    lastModified = Date(it.updatedAt),
+                    isExpanded = uiState.expandedMessage == index,
+                    onClick = {
+                        viewModel.onMessageClick(index)
+                    }
+                )
+            }
         }
     }
-
 }
