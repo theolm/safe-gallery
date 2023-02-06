@@ -2,4 +2,5 @@
     <string name="app_name">Safe Gallery</string>
     <string name="placeholder_message_input">Type your note</string>
     <string name="last_modified">Last modified: </string>
+    <string name="app_locked">The application is LOCKED.\nClick here to unlock it.</string>
 </resources>
