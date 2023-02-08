@@ -66,12 +66,14 @@ fun MessageBubble(
 ) {
     val elevation by animateDpAsState(targetValue = if (isExpanded) 4.dp else 0.dp)
     val maxLines by animateIntAsState(targetValue = if (isExpanded) messageMaxLines else messageMinLines)
+    val bottomPadding by animateDpAsState(targetValue = if (isExpanded) 16.dp else 8.dp)
+    val topPadding by animateDpAsState(targetValue = if (isExpanded) 16.dp else 0.dp)
 
     Card(
         modifier = modifier
             .fillMaxWidth()
             .animateContentSize()
-            .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 8.dp)
+            .padding(start = 16.dp, end = 16.dp, top = topPadding, bottom = bottomPadding)
             .combinedClickable(
                 onClick = onClick,
                 onLongClick = onLongClick,
@@ -81,7 +83,7 @@ fun MessageBubble(
         Column(Modifier.padding(16.dp)) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = message + message + message + message,
+                text = message,
                 style = MaterialTheme.typography.bodyLarge,
                 maxLines = maxLines,
                 overflow = TextOverflow.Ellipsis,

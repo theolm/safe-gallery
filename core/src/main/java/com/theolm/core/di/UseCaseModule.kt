@@ -1,8 +1,7 @@
 package com.theolm.core.di
 
-import com.theolm.core.usecase.GetSafeMessagesUseCase
+import com.theolm.core.usecase.*
 import com.theolm.core.usecase.GetSafeMessagesUseCaseImpl
-import com.theolm.core.usecase.SaveSafeMessagesUseCase
 import com.theolm.core.usecase.SaveSafeMessagesUseCaseImpl
 import dagger.Binds
 import dagger.Module
@@ -17,4 +16,7 @@ internal abstract class UseCaseModule {
 
     @Binds
     internal abstract fun bindsGetMessage(useCase: GetSafeMessagesUseCaseImpl): GetSafeMessagesUseCase
+
+    @Binds
+    internal abstract fun bindsDeleteMessage(useCase: DeleteSafeMessagesUseCaseImpl): DeleteSafeMessagesUseCase
 }

@@ -7,6 +7,8 @@ import javax.inject.Inject
 interface SafeMessagesRepository {
     suspend fun saveMessage(message: SafeMessage)
     fun getSafeMessagesFlow(): Flow<List<SafeMessage>>
+
+    suspend fun deleteMessage(message: SafeMessage)
 }
 
 internal class SafeMessagesRepositoryImpl @Inject constructor(
@@ -18,4 +20,8 @@ internal class SafeMessagesRepositoryImpl @Inject constructor(
     }
 
     override fun getSafeMessagesFlow(): Flow<List<SafeMessage>> = dataSource.getSafeMessagesFlow()
+
+    override suspend fun deleteMessage(message: SafeMessage) {
+        dataSource.deleteMessage(message)
+    }
 }

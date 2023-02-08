@@ -15,6 +15,10 @@ class SafeMessageRoomDataSource @Inject constructor(
         messagesDAO.insertMessage(SafeMessageEntity.fromSafeMessage(message))
     }
 
+    override suspend fun deleteMessage(message: SafeMessage) {
+        messagesDAO.deleteMessage(SafeMessageEntity.fromSafeMessage(message))
+    }
+
     override fun getSafeMessagesFlow(): Flow<List<SafeMessage>> = messagesDAO.getAll().map { list ->
         list.map { it.toSafeMessage() }
     }

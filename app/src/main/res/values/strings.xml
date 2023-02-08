@@ -3,4 +3,7 @@
     <string name="placeholder_message_input">Type your note</string>
     <string name="last_modified">Last modified: </string>
     <string name="app_locked">The application is LOCKED.\nClick here to unlock it.</string>
+    <string name="edit_message">Edit Safe Message</string>
+    <string name="save_message">Save Safe Message</string>
+    <string name="delete_message">Delete Safe Message</string>
 </resources>
