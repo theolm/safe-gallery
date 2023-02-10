@@ -1,4 +1,4 @@
-package com.theolm.safeGallery.presentation.ui.component
+package com.theolm.safeGallery.presentation.ui.page.notes.component
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
@@ -21,21 +21,21 @@ import com.theolm.safeGallery.presentation.ui.theme.PreviewThemeLight
 import java.util.*
 
 
-private const val mockMessage =
+private const val mockNote =
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
             "Nullam tincidunt dui dignissim velit iaculis pulvinar. Donec eget lacus volutpat, " +
             "efficitur libero vel, ornare ex. Cras aliquet ex vitae faucibus fermentum. " +
             "Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus."
 
-private const val messageMaxLines = 10000
-private const val messageMinLines = 4
+private const val maxLines = 10000
+private const val minLines = 4
 
 @Preview
 @Composable
 private fun PreviewLight() {
     PreviewThemeLight {
-        MessageBubble(
-            message = mockMessage,
+        NoteBubble(
+            note = mockNote,
             lastModified = Date(),
             isExpanded = true,
         )
@@ -46,8 +46,8 @@ private fun PreviewLight() {
 @Composable
 private fun PreviewDark() {
     PreviewThemeDark {
-        MessageBubble(
-            message = mockMessage,
+        NoteBubble(
+            note = mockNote,
             lastModified = Date(),
             isExpanded = true,
         )
@@ -56,16 +56,16 @@ private fun PreviewDark() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MessageBubble(
+fun NoteBubble(
     modifier: Modifier = Modifier,
-    message: String,
+    note: String,
     lastModified: Date,
     isExpanded: Boolean,
     onClick: () -> Unit = {},
     onLongClick: () -> Unit = {},
 ) {
     val elevation by animateDpAsState(targetValue = if (isExpanded) 4.dp else 0.dp)
-    val maxLines by animateIntAsState(targetValue = if (isExpanded) messageMaxLines else messageMinLines)
+    val maxLines by animateIntAsState(targetValue = if (isExpanded) maxLines else minLines)
     val bottomPadding by animateDpAsState(targetValue = if (isExpanded) 16.dp else 8.dp)
     val topPadding by animateDpAsState(targetValue = if (isExpanded) 16.dp else 0.dp)
 
@@ -83,7 +83,7 @@ fun MessageBubble(
         Column(Modifier.padding(16.dp)) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = message,
+                text = note,
                 style = MaterialTheme.typography.bodyLarge,
                 maxLines = maxLines,
                 overflow = TextOverflow.Ellipsis,

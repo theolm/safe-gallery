@@ -1,4 +1,4 @@
-package com.theolm.safeGallery.presentation.ui.page.messages.component
+package com.theolm.safeGallery.presentation.ui.page.notes.component
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,13 +21,13 @@ import com.theolm.safeGallery.R
 import com.theolm.safeGallery.presentation.ui.theme.PreviewThemeDark
 import com.theolm.safeGallery.presentation.ui.theme.PreviewThemeLight
 
-private const val mockMessage = "Testing secure message"
+private const val mockNote = "Testing secure Note"
 
 @Preview
 @Composable
 private fun PreviewLight() {
     PreviewThemeLight {
-        MessageInput(message = mockMessage)
+        NoteInput(note = mockNote)
     }
 }
 
@@ -35,7 +35,7 @@ private fun PreviewLight() {
 @Composable
 private fun PreviewDark() {
     PreviewThemeDark {
-        MessageInput(message = mockMessage)
+        NoteInput(note = mockNote)
     }
 }
 
@@ -43,7 +43,7 @@ private fun PreviewDark() {
 @Composable
 private fun PreviewPlaceholderLight() {
     PreviewThemeLight {
-        MessageInput(message = "")
+        NoteInput(note = "")
     }
 }
 
@@ -51,16 +51,16 @@ private fun PreviewPlaceholderLight() {
 @Composable
 private fun PreviewPlaceholderDark() {
     PreviewThemeDark {
-        MessageInput(message = "")
+        NoteInput(note = "")
     }
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun MessageInput(
+fun NoteInput(
     modifier: Modifier = Modifier,
-    message: String,
-    onMessageChange: (String) -> Unit = {},
+    note: String,
+    onNoteChange: (String) -> Unit = {},
     onSaveClick: () -> Unit = {},
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -81,15 +81,15 @@ fun MessageInput(
                     .heightIn(max = 120.dp)
                     .weight(1f)
                     .padding(all = 16.dp),
-                value = message,
-                onValueChange = onMessageChange,
+                value = note,
+                onValueChange = onNoteChange,
                 singleLine = false,
                 textStyle = MaterialTheme.typography.labelLarge.copy(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 ),
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                 decorationBox = { innerTextField ->
-                    if (message.isEmpty()) {
+                    if (note.isEmpty()) {
                         Placeholder()
                     } else {
                         innerTextField()
@@ -109,7 +109,7 @@ fun MessageInput(
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Save,
-                    contentDescription = stringResource(id = R.string.save_message),
+                    contentDescription = stringResource(id = R.string.save_note),
                 )
             }
         }
@@ -119,7 +119,7 @@ fun MessageInput(
 @Composable
 private fun Placeholder() {
     Text(
-        text = stringResource(id = R.string.placeholder_message_input),
+        text = stringResource(id = R.string.placeholder_note_input),
         style = MaterialTheme.typography.labelLarge.copy(
             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
         )

@@ -1,15 +1,17 @@
-package com.theolm.safeGallery.presentation.ui.page.messages
+package com.theolm.safeGallery.presentation.ui.page.notes
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.FabPosition
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -19,56 +21,59 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootNavGraph
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.theolm.safeGallery.presentation.ui.component.MessageBubble
-import com.theolm.safeGallery.presentation.ui.page.messages.component.MessageInput
+import com.theolm.safeGallery.presentation.ui.page.notes.component.NoteBubble
 import com.theolm.safeGallery.presentation.ui.components.OptionsAlertDialog
 import com.theolm.safeGallery.presentation.ui.components.OptionsAlertItem
 import com.theolm.safeGallery.R
+import com.theolm.safeGallery.presentation.ui.components.BottomNavigationHeight
+import com.theolm.safeGallery.presentation.ui.components.isScrollingUp
 import java.util.*
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Destination
 @Composable
-fun MessagePage(viewModel: MessageViewModel = hiltViewModel(), ) {
+fun MessagePage(viewModel: MessageViewModel = hiltViewModel()) {
     val uiState = viewModel.uiState
     val messageList by viewModel.messageFlow.collectAsState(initial = listOf())
     val screenHeightDp = LocalConfiguration.current.screenHeightDp
+    val listState = rememberLazyListState()
 
     MessageOptionsDialog(viewModel)
 
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .imePadding(),
+            .padding(bottom = BottomNavigationHeight),
         backgroundColor = MaterialTheme.colorScheme.background,
         floatingActionButton = {
-            MessageInput(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                message = uiState.inputMessage,
-                onMessageChange = {
-                    viewModel.onUpdateMessage(it)
+            ExtendedFloatingActionButton(
+                expanded = listState.isScrollingUp(),
+                icon = {
+                    Icon(
+                        Icons.Outlined.Add,
+                        contentDescription = null
+                    )
                 },
-                onSaveClick = {
-                    viewModel.onSaveMessage()
-                }
+                text = {
+                    Text("ADD NOTE")
+                },
+                onClick = { /*do something*/ }
             )
         },
-        floatingActionButtonPosition = FabPosition.Center,
+        floatingActionButtonPosition = FabPosition.End,
+        isFloatingActionButtonDocked = false
     ) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .navigationBarsPadding(),
-            contentPadding = PaddingValues(top = 32.dp, bottom = (screenHeightDp/2).dp)
+            state = listState,
+            contentPadding = PaddingValues(top = 32.dp, bottom = (screenHeightDp / 2).dp)
         ) {
             itemsIndexed(messageList) { index, it ->
-                MessageBubble(
+                NoteBubble(
                     modifier = Modifier.fillMaxWidth(),
-                    message = it.message,
+                    note = it.message,
                     lastModified = Date(it.updatedAt),
                     isExpanded = uiState.expandedMessage == index,
                     onClick = {
@@ -89,7 +94,7 @@ private fun MessageOptionsDialog(viewModel: MessageViewModel) {
     viewModel.uiState.openOptionAlert?.let { message ->
         OptionsAlertDialog(
             OptionsAlertItem(
-                text = stringResource(id = R.string.edit_message),
+                text = stringResource(id = R.string.edit_note),
                 icon = Icons.Default.Edit,
                 color = MaterialTheme.colorScheme.primary,
                 onClick = {
@@ -97,7 +102,7 @@ private fun MessageOptionsDialog(viewModel: MessageViewModel) {
                 }
             ),
             OptionsAlertItem(
-                text = stringResource(id = R.string.delete_message),
+                text = stringResource(id = R.string.delete_note),
                 icon = Icons.Default.Delete,
                 color = MaterialTheme.colorScheme.error,
                 onClick = {

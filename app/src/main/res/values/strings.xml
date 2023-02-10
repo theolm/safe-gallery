@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">Safe Gallery</string>
     <string name="gallery">Photos</string>
-    <string name="messages">Notes</string>
-    <string name="placeholder_message_input">Type your note</string>
+    <string name="note">Notes</string>
+    <string name="placeholder_note_input">Type your note</string>
     <string name="last_modified">Last modified: </string>
     <string name="app_locked">The application is LOCKED.\nClick here to unlock it.</string>
-    <string name="edit_message">Edit Safe Message</string>
-    <string name="save_message">Save Safe Message</string>
-    <string name="delete_message">Delete Safe Message</string>
+    <string name="edit_note">Edit Safe Note</string>
+    <string name="save_note">Save Safe Note</string>
+    <string name="delete_note">Delete Safe Note</string>
 </resources>

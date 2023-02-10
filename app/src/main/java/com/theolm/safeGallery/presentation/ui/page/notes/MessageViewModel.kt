@@ -1,4 +1,4 @@
-package com.theolm.safeGallery.presentation.ui.page.messages
+package com.theolm.safeGallery.presentation.ui.page.notes
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
