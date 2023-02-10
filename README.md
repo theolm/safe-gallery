@@ -9,7 +9,7 @@ Safe Gallery is being developed with the intention of demonstrating the use of t
 * BuildSrc + kotlin gradle scripts
 * Jetpack Compose for the UI
 * Themes with Jetpack Compose (light/dark)
-* <del>Jetpack Compose Navigation</del> (not good enough for production)
+* <del>Jetpack Compose Navigation</del> (not good enough. no type-safe arguments, lots of boilerplate, etc)
 * Compose Destinations (wrapper arround the official Compose Navigation. Provides typesafe navigation + multi-module support)
 * Room
 * Hilt
