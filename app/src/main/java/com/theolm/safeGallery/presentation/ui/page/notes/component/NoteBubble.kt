@@ -8,6 +8,7 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -37,7 +38,6 @@ private fun PreviewLight() {
         NoteBubble(
             note = mockNote,
             lastModified = Date(),
-            isExpanded = true,
         )
     }
 }
@@ -49,7 +49,6 @@ private fun PreviewDark() {
         NoteBubble(
             note = mockNote,
             lastModified = Date(),
-            isExpanded = true,
         )
     }
 }
@@ -60,43 +59,52 @@ fun NoteBubble(
     modifier: Modifier = Modifier,
     note: String,
     lastModified: Date,
-    isExpanded: Boolean,
     onClick: () -> Unit = {},
-    onLongClick: () -> Unit = {},
 ) {
+    var isExpanded by rememberSaveable { mutableStateOf(false) }
     val elevation by animateDpAsState(targetValue = if (isExpanded) 4.dp else 0.dp)
     val maxLines by animateIntAsState(targetValue = if (isExpanded) maxLines else minLines)
-    val bottomPadding by animateDpAsState(targetValue = if (isExpanded) 16.dp else 8.dp)
-    val topPadding by animateDpAsState(targetValue = if (isExpanded) 16.dp else 0.dp)
+    val verticalPadding by animateDpAsState(targetValue = if (isExpanded) 8.dp else 4.dp)
 
     Card(
         modifier = modifier
             .fillMaxWidth()
             .animateContentSize()
-            .padding(start = 16.dp, end = 16.dp, top = topPadding, bottom = bottomPadding)
-            .combinedClickable(
-                onClick = onClick,
-                onLongClick = onLongClick,
+            .padding(
+                start = 16.dp,
+                end = 16.dp,
+                top = verticalPadding,
+                bottom = verticalPadding
             ),
         elevation = CardDefaults.cardElevation(defaultElevation = elevation),
     ) {
-        Column(Modifier.padding(16.dp)) {
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = note,
-                style = MaterialTheme.typography.bodyLarge,
-                maxLines = maxLines,
-                overflow = TextOverflow.Ellipsis,
+        Box(
+            modifier = Modifier.combinedClickable(
+                onClick = onClick,
+                onLongClick = {
+                    isExpanded = !isExpanded
+                },
             )
+        ) {
+            Column(Modifier.padding(16.dp)) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = note,
+                    style = MaterialTheme.typography.bodyLarge,
+                    maxLines = maxLines,
+                    overflow = TextOverflow.Ellipsis,
+                )
 
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-                text = "${stringResource(id = R.string.last_modified)} ${lastModified.toDateAndTime()}",
-                style = MaterialTheme.typography.bodySmall,
-                textAlign = TextAlign.End,
-            )
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    text = "${stringResource(id = R.string.last_modified)} ${lastModified.toDateAndTime()}",
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.End,
+                )
+            }
         }
+
     }
 }

@@ -5,7 +5,8 @@
     <string name="placeholder_note_input">Type your note</string>
     <string name="last_modified">Last modified: </string>
     <string name="app_locked">The application is LOCKED.\nClick here to unlock it.</string>
-    <string name="edit_note">Edit Safe Note</string>
-    <string name="save_note">Save Safe Note</string>
+    <string name="edit_note">Edit note</string>
+    <string name="save_note">Save Note</string>
+    <string name="note_saved">Note saved</string>
     <string name="delete_note">Delete Safe Note</string>
 </resources>

@@ -1,6 +1,6 @@
 # Safe Gallery (The name may change)
 
-This application intends to be a kind of vault where it will be possible to add notes, messages and images safely. The aim is that the content added within this app is accessible only through the use of biometrics and not visible by other applications.
+This application intends to be a kind of vault where it will be possible to add notes, notes and images safely. The aim is that the content added within this app is accessible only through the use of biometrics and not visible by other applications.
 
 Safe Gallery is being developed with the intention of demonstrating the use of the following technologies:
 

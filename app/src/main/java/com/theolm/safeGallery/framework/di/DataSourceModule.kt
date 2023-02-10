@@ -1,7 +1,7 @@
 package com.theolm.safeGallery.framework.di
 
-import com.theolm.core.repository.MessageDataSource
-import com.theolm.safeGallery.framework.database.source.SafeMessageRoomDataSource
+import com.theolm.core.repository.NotesDataSource
+import com.theolm.safeGallery.framework.database.source.SafeNotesRoomDataSource
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -13,5 +13,5 @@ import javax.inject.Singleton
 abstract class DataSourceModule {
     @Singleton
     @Binds
-    abstract fun bindsSafeMessageRoomDataSource(dataSource: SafeMessageRoomDataSource): MessageDataSource
+    abstract fun bindsSafeNotesRoomDataSource(dataSource: SafeNotesRoomDataSource): NotesDataSource
 }

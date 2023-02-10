@@ -1,7 +1,7 @@
 package com.theolm.core.di
 
-import com.theolm.core.repository.SafeMessagesRepository
-import com.theolm.core.repository.SafeMessagesRepositoryImpl
+import com.theolm.core.repository.SafeNotesRepository
+import com.theolm.core.repository.SafeNotesRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -13,5 +13,5 @@ import javax.inject.Singleton
 internal abstract class RepoModule {
     @Singleton
     @Binds
-    internal abstract fun bindsSafeMessageRepo(repoImpl: SafeMessagesRepositoryImpl): SafeMessagesRepository
+    internal abstract fun bindsSafeNoteRepo(repoImpl: SafeNotesRepositoryImpl): SafeNotesRepository
 }
