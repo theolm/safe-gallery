@@ -28,7 +28,7 @@ class MainActivity : FragmentActivity() {
             val state by viewModel.lockState.collectAsState(initial = LockState.LOCK)
             AppTheme {
                 AnimatedContent(targetState = state) {
-                    if (it == LockState.UNLOCK || true) {
+                    if (it == LockState.UNLOCK) {
                         HomePage()
                     } else {
                         LockedPage()
