@@ -3,7 +3,7 @@ package com.theolm.safeGallery.framework.di
 import android.content.Context
 import androidx.room.Room
 import com.theolm.safeGallery.framework.database.AppDatabase
-import com.theolm.safeGallery.framework.database.dao.SafeMessagesDAO
+import com.theolm.safeGallery.framework.database.dao.SafeNotesDAO
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,8 +15,8 @@ import javax.inject.Singleton
 @Module
 class DatabaseModule {
     @Provides
-    fun provideSafeMessageDao(appDatabase: AppDatabase): SafeMessagesDAO {
-        return appDatabase.safeMessagesDAO()
+    fun provideSafeNotesDao(appDatabase: AppDatabase): SafeNotesDAO {
+        return appDatabase.safeNotesDAO()
     }
 
     @Provides

@@ -2,28 +2,28 @@ package com.theolm.safeGallery.framework.database.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.theolm.core.data.SafeMessage
+import com.theolm.core.data.SafeNote
 
 @Entity
-data class SafeMessageEntity(
+data class SafeNoteEntity(
     @PrimaryKey(autoGenerate = true) val uid: Int = 0,
-    val message: String,
+    val note: String,
     val createdAt: Long,
     val updatedAt: Long,
 ) {
-    fun toSafeMessage() =
-        SafeMessage(
+    fun toSafeNote() =
+        SafeNote(
             uid = uid,
-            message = message,
+            note = note,
             createdAt = createdAt,
             updatedAt = updatedAt
         )
 
     companion object {
-        fun fromSafeMessage(msg: SafeMessage) = with(msg) {
-            SafeMessageEntity(
+        fun fromSafeNote(note: SafeNote) = with(note) {
+            SafeNoteEntity(
                 uid = uid ?: 0,
-                message = message,
+                note = this.note,
                 createdAt = createdAt,
                 updatedAt = updatedAt
             )

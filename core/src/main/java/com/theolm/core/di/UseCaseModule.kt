@@ -1,8 +1,8 @@
 package com.theolm.core.di
 
 import com.theolm.core.usecase.*
-import com.theolm.core.usecase.GetSafeMessagesUseCaseImpl
-import com.theolm.core.usecase.SaveSafeMessagesUseCaseImpl
+import com.theolm.core.usecase.GetSafeNotesUseCaseImpl
+import com.theolm.core.usecase.SaveSafeNoteUseCaseImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -12,11 +12,11 @@ import dagger.hilt.android.components.ViewModelComponent
 @Module
 internal abstract class UseCaseModule {
     @Binds
-    internal abstract fun bindsSaveMessage(useCase: SaveSafeMessagesUseCaseImpl): SaveSafeMessagesUseCase
+    internal abstract fun bindsSaveNote(useCase: SaveSafeNoteUseCaseImpl): SaveSafeNoteUseCase
 
     @Binds
-    internal abstract fun bindsGetMessage(useCase: GetSafeMessagesUseCaseImpl): GetSafeMessagesUseCase
+    internal abstract fun bindsGetNote(useCase: GetSafeNotesUseCaseImpl): GetSafeNotesUseCase
 
     @Binds
-    internal abstract fun bindsDeleteMessage(useCase: DeleteSafeMessagesUseCaseImpl): DeleteSafeMessagesUseCase
+    internal abstract fun bindsDeleteNote(useCase: DeleteSafeNoteUseCaseImpl): DeleteSafeNoteUseCase
 }
