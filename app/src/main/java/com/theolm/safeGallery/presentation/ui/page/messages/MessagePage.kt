@@ -29,13 +29,9 @@ import com.theolm.safeGallery.R
 import java.util.*
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
-@RootNavGraph(start = true)
 @Destination
 @Composable
-fun MessagePage(
-    navigator: DestinationsNavigator,
-    viewModel: MessageViewModel = hiltViewModel(),
-) {
+fun MessagePage(viewModel: MessageViewModel = hiltViewModel(), ) {
     val uiState = viewModel.uiState
     val messageList by viewModel.messageFlow.collectAsState(initial = listOf())
     val screenHeightDp = LocalConfiguration.current.screenHeightDp
