@@ -32,13 +32,13 @@ import java.util.*
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Destination
 @Composable
-fun MessagePage(viewModel: MessageViewModel = hiltViewModel()) {
+fun NotesPage(viewModel: NotesViewModel = hiltViewModel()) {
     val uiState = viewModel.uiState
-    val messageList by viewModel.messageFlow.collectAsState(initial = listOf())
+    val noteList by viewModel.notesFlow.collectAsState(initial = listOf())
     val screenHeightDp = LocalConfiguration.current.screenHeightDp
     val listState = rememberLazyListState()
 
-    MessageOptionsDialog(viewModel)
+    NotesOptionsDialog(viewModel)
 
     Scaffold(
         modifier = Modifier
@@ -70,18 +70,18 @@ fun MessagePage(viewModel: MessageViewModel = hiltViewModel()) {
             state = listState,
             contentPadding = PaddingValues(top = 32.dp, bottom = (screenHeightDp / 2).dp)
         ) {
-            itemsIndexed(messageList) { index, it ->
+            itemsIndexed(noteList) { index, it ->
                 NoteBubble(
                     modifier = Modifier.fillMaxWidth(),
                     note = it.message,
                     lastModified = Date(it.updatedAt),
-                    isExpanded = uiState.expandedMessage == index,
+                    isExpanded = uiState.expandedNote == index,
                     onClick = {
-                        viewModel.onMessageClick(index)
+                        viewModel.onNoteClick(index)
                     },
                     onLongClick = {
-                        viewModel.onMessageClick(index)
-                        viewModel.openAlertForMessage(it)
+                        viewModel.onNoteClick(index)
+                        viewModel.openAlertForNote(it)
                     }
                 )
             }
@@ -90,7 +90,7 @@ fun MessagePage(viewModel: MessageViewModel = hiltViewModel()) {
 }
 
 @Composable
-private fun MessageOptionsDialog(viewModel: MessageViewModel) {
+private fun NotesOptionsDialog(viewModel: NotesViewModel) {
     viewModel.uiState.openOptionAlert?.let { message ->
         OptionsAlertDialog(
             OptionsAlertItem(
@@ -98,7 +98,7 @@ private fun MessageOptionsDialog(viewModel: MessageViewModel) {
                 icon = Icons.Default.Edit,
                 color = MaterialTheme.colorScheme.primary,
                 onClick = {
-                    viewModel.onEditMessage(message)
+                    viewModel.onEditNote(message)
                 }
             ),
             OptionsAlertItem(
@@ -106,7 +106,7 @@ private fun MessageOptionsDialog(viewModel: MessageViewModel) {
                 icon = Icons.Default.Delete,
                 color = MaterialTheme.colorScheme.error,
                 onClick = {
-                    viewModel.deleteMessage(message)
+                    viewModel.deleteNote(message)
                 }
             ),
             onDismiss = {

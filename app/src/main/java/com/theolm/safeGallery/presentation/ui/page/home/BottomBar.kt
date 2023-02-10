@@ -16,7 +16,7 @@ import com.theolm.safeGallery.R
 import com.theolm.safeGallery.presentation.ui.components.SafeBottomNavigation
 import com.theolm.safeGallery.presentation.ui.page.destinations.Destination
 import com.theolm.safeGallery.presentation.ui.page.destinations.GalleryPageDestination
-import com.theolm.safeGallery.presentation.ui.page.destinations.MessagePageDestination
+import com.theolm.safeGallery.presentation.ui.page.destinations.NotesPageDestination
 
 @Composable
 fun BottomBar(
@@ -57,5 +57,5 @@ private enum class BottomBarDestination(
     @StringRes val label: Int
 ) {
     Gallery(GalleryPageDestination, Icons.Outlined.Photo, R.string.gallery),
-    Messages(MessagePageDestination, Icons.Outlined.Message, R.string.note)
+    Notes(NotesPageDestination, Icons.Outlined.Message, R.string.note)
 }
