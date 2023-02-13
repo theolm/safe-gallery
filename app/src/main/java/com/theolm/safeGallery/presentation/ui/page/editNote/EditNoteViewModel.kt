@@ -7,6 +7,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.theolm.core.data.SafeNote
+import com.theolm.core.usecase.DeleteSafeNoteUseCase
 import com.theolm.core.usecase.SaveSafeNoteUseCase
 import com.theolm.safeGallery.presentation.ui.page.destinations.EditNotePageDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,6 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class EditNoteViewModel @Inject constructor(
     private val saveSafeNotesUseCase: SaveSafeNoteUseCase,
+    private val deleteSafeNoteUseCase: DeleteSafeNoteUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val safeNote: SafeNote
@@ -54,11 +56,16 @@ class EditNoteViewModel @Inject constructor(
         uiState = uiState.copy(showDeleteAlert = true)
     }
 
+    suspend fun onDeleteNote() {
+        closeDeleteAlert()
+        deleteSafeNoteUseCase.delete(safeNote)
+    }
+
     fun closeDeleteAlert() {
         uiState = uiState.copy(showDeleteAlert = false)
     }
 
-    suspend fun saveNote() : Boolean {
+    suspend fun saveNote(): Boolean {
         uiState = uiState.copy(isEditMode = false)
 
         if (uiState.note.text.isBlank()) {

@@ -8,5 +8,8 @@
     <string name="edit_note">Edit note</string>
     <string name="save_note">Save Note</string>
     <string name="note_saved">Note saved</string>
-    <string name="delete_note">Delete Safe Note</string>
+    <string name="delete_note">Delete safe note</string>
+    <string name="delete_note_message">Are you sure you want to delete the note?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
 </resources>

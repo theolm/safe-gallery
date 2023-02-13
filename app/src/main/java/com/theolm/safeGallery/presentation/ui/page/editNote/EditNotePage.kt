@@ -1,8 +1,7 @@
 package com.theolm.safeGallery.presentation.ui.page.editNote
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -53,6 +52,10 @@ fun EditNotePage(
         } else {
             focusManager.clearFocus()
         }
+    }
+
+    DeleteDialog(viewModel) {
+        navigator.popBackStack()
     }
 
     Scaffold(
@@ -122,4 +125,46 @@ private fun Placeholder() {
             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
         )
     )
+}
+
+
+@Composable
+private fun DeleteDialog(
+    viewModel: EditNoteViewModel,
+    onDelete: () -> Unit,
+) {
+    if (viewModel.uiState.showDeleteAlert) {
+        val scope = rememberCoroutineScope()
+        AlertDialog(
+            onDismissRequest = { viewModel.closeDeleteAlert() },
+            title = {
+                Text(text = stringResource(id = R.string.delete_note))
+            },
+            text = {
+                Text(text = stringResource(id = R.string.delete_note_message))
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        scope.launch {
+                            viewModel.onDeleteNote()
+                            onDelete.invoke()
+                        }
+                    }
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.delete),
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { viewModel.closeDeleteAlert() }
+                ) {
+                    Text(text = stringResource(id = R.string.cancel))
+                }
+            }
+        )
+    }
 }
