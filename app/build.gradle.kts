@@ -97,17 +97,19 @@ dependencies {
     implementation(Deps.composeWindowSizeClass)
     implementation(Deps.composeRuntime)
     implementation(Deps.composeLiveData)
+    implementation(Deps.coil)
+
+    // Hilt
     implementation(Deps.hiltAndroid)
     implementation(Deps.hiltNavCompose)
     kapt(Deps.hiltCompiler)
 
-    implementation(Deps.moshi)
-    kapt(Deps.moshiCodeGen)
-
+    // Room
     implementation(Deps.roomRuntime)
     implementation(Deps.roomKtx)
     kapt(Deps.roomCompiler)
 
+    // Compose Destinations - https://github.com/raamcosta/compose-destinations
     implementation(Deps.composeDestinationCore)
     ksp(Deps.composeDestinationKsp)
 

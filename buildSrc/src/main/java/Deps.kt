@@ -27,10 +27,9 @@ object Deps {
     val roomRuntime by lazy { "androidx.room:room-runtime:${Versions.room}" }
     val roomCompiler by lazy { "androidx.room:room-compiler:${Versions.room}" }
     val roomKtx by lazy { "androidx.room:room-ktx:${Versions.room}" }
-    val moshi by lazy { "com.squareup.moshi:moshi-kotlin:${Versions.moshi}" }
-    val moshiCodeGen by lazy { "com.squareup.moshi:moshi-kotlin-codegen:${Versions.moshi}" }
     val composeDestinationCore by lazy { "io.github.raamcosta.compose-destinations:core:${Versions.composeDestination}" }
     val composeDestinationKsp by lazy { "io.github.raamcosta.compose-destinations:ksp:${Versions.composeDestination}" }
+    val coil by lazy { "io.coil-kt:coil-compose:${Versions.coil}" }
 
     val composeUiTest by lazy { "androidx.compose.ui:ui-test-junit4" }
     val composeUiTooling by lazy { "androidx.compose.ui:ui-tooling" }

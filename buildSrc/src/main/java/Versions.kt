@@ -17,8 +17,8 @@ object Versions {
     const val hilt = "2.44"
     const val hiltNavCompose = "1.0.0"
     const val room = "2.4.1"
-    const val moshi = "1.14.0"
     const val kspVersion = "1.7.20-1.0.8"
     const val composeDestination = "1.8.33-beta"
+    const val coil = "2.2.2"
     const val junit = "4.13.2"
 }
