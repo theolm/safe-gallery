@@ -4,7 +4,7 @@ import com.theolm.core.data.SafeNote
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-interface SafeNotesRepository {
+internal interface SafeNotesRepository {
     suspend fun saveNote(note: SafeNote)
     fun getSafeNotesFlow(): Flow<List<SafeNote>>
     suspend fun deleteNote(note: SafeNote)

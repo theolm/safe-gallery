@@ -19,4 +19,7 @@ internal abstract class UseCaseModule {
 
     @Binds
     internal abstract fun bindsDeleteNote(useCase: DeleteSafeNoteUseCaseImpl): DeleteSafeNoteUseCase
+
+    @Binds
+    internal abstract fun bindsCreateTempFile(useCase: CreateTempFileUseCaseImpl): CreateTempFileUseCase
 }

@@ -9,5 +9,5 @@ import javax.inject.Inject
 class NotesViewModel @Inject constructor(
     getSafeNotesUseCase: GetSafeNotesUseCase,
 ) : ViewModel() {
-    val notesFlow = getSafeNotesUseCase.getFlow()
+    val notesFlow = getSafeNotesUseCase()
 }
