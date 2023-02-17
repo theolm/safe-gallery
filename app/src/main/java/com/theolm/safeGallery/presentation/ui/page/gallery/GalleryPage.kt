@@ -1,18 +1,17 @@
 package com.theolm.safeGallery.presentation.ui.page.gallery
 
 import android.annotation.SuppressLint
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material.FabPosition
-import androidx.compose.material.Scaffold
+import androidx.compose.material3.FabPosition
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,9 +22,11 @@ import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.theolm.safeGallery.presentation.ui.components.BottomNavigationHeight
 import com.theolm.safeGallery.presentation.ui.page.destinations.PreviewPageDestination
+import com.theolm.safeGallery.presentation.ui.page.preview.PreviewPageNavArgs
 
 private const val spaceBetweenCells = 4
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @RootNavGraph(start = true)
 @Destination
@@ -37,15 +38,23 @@ fun GalleryPage(
 
     val listState = rememberLazyGridState()
 
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
+        if (it) {
+            navigator.navigate(PreviewPageDestination(navArgs = PreviewPageNavArgs(viewModel.tempUri)))
+        } else {
+            navigator.popBackStack()
+        }
+    }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .padding(bottom = BottomNavigationHeight),
-        backgroundColor = MaterialTheme.colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.background,
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navigator.navigate(PreviewPageDestination)
+                    launcher.launch(viewModel.tempUri)
                 }
             ) {
                 Icon(
@@ -55,7 +64,6 @@ fun GalleryPage(
             }
         },
         floatingActionButtonPosition = FabPosition.End,
-        isFloatingActionButtonDocked = false
     ) {
 
         LazyVerticalGrid(
@@ -84,4 +92,3 @@ fun GalleryPage(
         }
     }
 }
-

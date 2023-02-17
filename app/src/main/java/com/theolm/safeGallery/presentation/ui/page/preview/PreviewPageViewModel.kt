@@ -4,24 +4,26 @@ import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.theolm.core.usecase.CreateTempFileUseCase
+import com.theolm.safeGallery.presentation.ui.page.destinations.PreviewPageDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class PreviewPageViewModel @Inject constructor(
-    createTempFileUseCase: CreateTempFileUseCase,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    var uiState by mutableStateOf(PreviewPageUiState(createTempFileUseCase()))
+    var uiState by mutableStateOf(PreviewPageUiState(getTempUri()))
         private set
 
-    fun loadImage(uri: Uri) {
-        uiState = uiState.copy(uri = uri)
+
+    fun savePhoto() {
+
     }
+
+    private fun getTempUri() =
+        PreviewPageDestination.argsFrom(savedStateHandle).tempImageUri
 }
 
-data class PreviewPageUiState(
-    val tempUri: Uri,
-    val uri: Uri? = null,
-)
+data class PreviewPageUiState(val tempUri: Uri)
