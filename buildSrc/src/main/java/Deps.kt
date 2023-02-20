@@ -35,4 +35,5 @@ object Deps {
     val composeUiTooling by lazy { "androidx.compose.ui:ui-tooling" }
     val composeUiToolingPreview by lazy { "androidx.compose.ui:ui-tooling-preview" }
     val junit by lazy { "junit:junit:${Versions.junit}" }
+    val robolectric by lazy { "org.robolectric:robolectric:${Versions.robolectric}" }
 }

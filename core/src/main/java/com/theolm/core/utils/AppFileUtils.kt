@@ -3,6 +3,8 @@ package com.theolm.core.utils
 import android.content.Context
 import java.io.File
 import java.util.*
+import kotlin.random.Random
+import kotlin.random.nextInt
 
 object AppFileUtils {
     private const val images = "images"
@@ -16,12 +18,13 @@ object AppFileUtils {
     }
 
     fun getImageFileName(prefix: String, extension: String): String {
-        val date = Date().toString().replace(" ", "_").replace(":", "-")
-        return "$prefix$date$extension"
+        val date = Date().time
+        val random = Random.nextInt(IntRange(start = 1, endInclusive = Int.MAX_VALUE))
+        return "${prefix}_${date}_$random.$extension"
     }
 
     fun createTempFile(context: Context, extension: String): File =
-        File.createTempFile(tempName, extension, context.cacheDir).apply {
+        File.createTempFile("${tempName}_", ".$extension", context.cacheDir).apply {
             createNewFile()
             deleteOnExit()
         }
