@@ -3,23 +3,28 @@ package com.theolm.safeGallery.presentation.ui.page.gallery
 import android.annotation.SuppressLint
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material3.FabPosition
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberAsyncImagePainter
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.theolm.safeGallery.R
 import com.theolm.safeGallery.presentation.ui.components.BottomNavigationHeight
 import com.theolm.safeGallery.presentation.ui.page.destinations.PreviewPageDestination
 import com.theolm.safeGallery.presentation.ui.page.preview.PreviewPageNavArgs
@@ -40,11 +45,15 @@ fun GalleryPage(
 
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
         if (it) {
-            navigator.navigate(PreviewPageDestination(navArgs = PreviewPageNavArgs(viewModel.tempUri)))
+            viewModel.tempUri?.let {
+                navigator.navigate(PreviewPageDestination(navArgs = PreviewPageNavArgs(it)))
+            }
         } else {
             navigator.popBackStack()
         }
     }
+
+    val photos by viewModel.photos.collectAsState(initial = listOf())
 
     Scaffold(
         modifier = Modifier
@@ -54,6 +63,7 @@ fun GalleryPage(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
+                    viewModel.refreshTempFile()
                     launcher.launch(viewModel.tempUri)
                 }
             ) {
@@ -81,12 +91,14 @@ fun GalleryPage(
             verticalArrangement = Arrangement.spacedBy(spaceBetweenCells.dp),
             horizontalArrangement = Arrangement.spacedBy(spaceBetweenCells.dp)
         ) {
-            items(100) {
-                Box(
+            items(photos) {
+                Image(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(100.dp)
-                        .background(Color.Red)
+                        .height(100.dp),
+                    painter = rememberAsyncImagePainter(it.uri),
+                    contentDescription = stringResource(id = R.string.photo),
+                    contentScale = ContentScale.Crop
                 )
             }
         }

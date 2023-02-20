@@ -22,4 +22,13 @@ internal abstract class UseCaseModule {
 
     @Binds
     internal abstract fun bindsCreateTempFile(useCase: CreateTempFileUseCaseImpl): CreateTempFileUseCase
+
+    @Binds
+    internal abstract fun bindsSavePhoto(useCase: SavePhotoUseCaseImpl): SavePhotoUseCase
+
+    @Binds
+    internal abstract fun bindsDeletePhoto(useCase: DeletePhotoUseCaseImpl): DeletePhotoUseCase
+
+    @Binds
+    internal abstract fun bindsGetPhoto(useCase: GetPhotosUseCaseImpl): GetPhotosUseCase
 }
