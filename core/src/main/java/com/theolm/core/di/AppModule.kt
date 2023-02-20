@@ -14,4 +14,5 @@ internal abstract class AppModule {
     @Singleton
     @Binds
     abstract fun bindsAppAuthState(state: AppAuthStateImpl) : AppAuthState
+
 }

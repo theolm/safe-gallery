@@ -7,6 +7,7 @@ import androidx.core.net.toFile
 import androidx.core.net.toUri
 import com.theolm.core.data.SafePhoto
 import com.theolm.core.repository.GalleryDataSource
+import com.theolm.core.utils.AppFileUtils
 import com.theolm.safeGallery.BuildConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
@@ -14,11 +15,13 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
-import java.util.*
 import javax.inject.Inject
 
 
-class SafeGalleryDataSource @Inject constructor(private val application: Application) :
+class SafeGalleryDataSource @Inject constructor(
+    private val application: Application,
+    private val fileUtils: AppFileUtils,
+) :
     GalleryDataSource {
     private val sharedFlow =
         MutableSharedFlow<List<SafePhoto>>(
@@ -26,17 +29,15 @@ class SafeGalleryDataSource @Inject constructor(private val application: Applica
             onBufferOverflow = BufferOverflow.DROP_OLDEST
         )
 
-    private val imagesFolder = getImagesFolder()
+    private val imagesFolder = fileUtils.getImagesFolder(application)
 
     init {
         updatePhotoFlow()
     }
 
     override fun createTempFile(): Uri {
-        val tmpFile = File.createTempFile(tempFileName, tempFileExt, application.cacheDir).apply {
-            createNewFile()
-            deleteOnExit()
-        }
+        val tmpFile = fileUtils.createTempFile(application, imageExt)
+
         return FileProvider.getUriForFile(
             application,
             "${BuildConfig.APPLICATION_ID}.provider",
@@ -48,7 +49,13 @@ class SafeGalleryDataSource @Inject constructor(private val application: Applica
         application.contentResolver.openInputStream(photo.uri)?.let {
             try {
                 withContext(Dispatchers.IO) {
-                    val outputFile = File(imagesFolder, getImageFileName())
+                    val outputFile =
+                        File(
+                            imagesFolder, fileUtils.getImageFileName(
+                                prefix = imagePrefix,
+                                extension = imageExt
+                            )
+                        )
                     val outputStream = FileOutputStream(outputFile)
                     it.copyTo(outputStream)
                     outputStream.flush()
@@ -79,25 +86,12 @@ class SafeGalleryDataSource @Inject constructor(private val application: Applica
 
     override fun getPhotos() = sharedFlow
 
-    private fun getImageFileName(): String {
-        val date = Date().toString().replace(" ", "_").replace(":", "-")
-        return "photo_$date$tempFileExt"
-    }
-
     private fun updatePhotoFlow() {
         val photos = listPhotos()
         sharedFlow.tryEmit(photos)
     }
 
-    //TODO: Move to utils class
-    private fun getImagesFolder() : File {
-        val folder = File(application.filesDir, images)
-        if (!folder.exists()) folder.mkdir()
-
-        return folder
-    }
-
-    private fun listPhotos() : List<SafePhoto> {
+    fun listPhotos(): List<SafePhoto> {
         val files = imagesFolder.listFiles() ?: return emptyList()
         return if (files.isEmpty()) {
             emptyList()
@@ -109,8 +103,7 @@ class SafeGalleryDataSource @Inject constructor(private val application: Applica
     }
 
     private companion object {
-        const val tempFileName = "tmp_image_file"
-        const val tempFileExt = ".jpg"
-        const val images = "images"
+        const val imageExt = ".jpg"
+        const val imagePrefix = "photo_"
     }
 }
