@@ -1,5 +1,7 @@
 package com.theolm.core.di
 
+import com.theolm.core.repository.SafeGalleryRepository
+import com.theolm.core.repository.SafeGalleryRepositoryImpl
 import com.theolm.core.repository.SafeNotesRepository
 import com.theolm.core.repository.SafeNotesRepositoryImpl
 import dagger.Binds
@@ -14,4 +16,8 @@ internal abstract class RepoModule {
     @Singleton
     @Binds
     internal abstract fun bindsSafeNoteRepo(repoImpl: SafeNotesRepositoryImpl): SafeNotesRepository
+
+    @Singleton
+    @Binds
+    internal abstract fun bindsSafeGalleryRepo(repoImpl: SafeGalleryRepositoryImpl): SafeGalleryRepository
 }

@@ -6,12 +6,11 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 interface GetSafeNotesUseCase {
-    fun getFlow(): Flow<List<SafeNote>>
+    operator fun invoke(): Flow<List<SafeNote>>
 }
 
 internal class GetSafeNotesUseCaseImpl @Inject constructor(
     private val repository: SafeNotesRepository
 ) : GetSafeNotesUseCase{
-    override fun getFlow(): Flow<List<SafeNote>> =
-        repository.getSafeNotesFlow()
+    override fun invoke(): Flow<List<SafeNote>> = repository.getSafeNotesFlow()
 }

@@ -5,13 +5,13 @@ import com.theolm.core.repository.SafeNotesRepository
 import javax.inject.Inject
 
 interface SaveSafeNoteUseCase {
-    suspend fun save(note: SafeNote)
+    suspend operator fun invoke(note: SafeNote)
 }
 
 internal class SaveSafeNoteUseCaseImpl @Inject constructor(
     private val repository: SafeNotesRepository
 ) : SaveSafeNoteUseCase {
-    override suspend fun save(note: SafeNote) {
+    override suspend fun invoke(note: SafeNote) {
         repository.saveNote(note)
     }
 }

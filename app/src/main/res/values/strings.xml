@@ -7,9 +7,12 @@
     <string name="app_locked">The application is LOCKED.\nClick here to unlock it.</string>
     <string name="edit_note">Edit note</string>
     <string name="save_note">Save Note</string>
+    <string name="add_note">Add note</string>
     <string name="note_saved">Note saved</string>
     <string name="delete_note">Delete safe note</string>
     <string name="delete_note_message">Are you sure you want to delete the note?</string>
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
+    <string name="save_photo">Save photo</string>
+    <string name="photo">Photo</string>
 </resources>

@@ -58,7 +58,7 @@ class EditNoteViewModel @Inject constructor(
 
     suspend fun onDeleteNote() {
         closeDeleteAlert()
-        deleteSafeNoteUseCase.delete(safeNote)
+        deleteSafeNoteUseCase(safeNote)
     }
 
     fun closeDeleteAlert() {
@@ -77,7 +77,7 @@ class EditNoteViewModel @Inject constructor(
             note = uiState.note.text,
             updatedAt = Date().time
         ).also {
-            saveSafeNotesUseCase.save(it)
+            saveSafeNotesUseCase(it)
         }
 
         return true
