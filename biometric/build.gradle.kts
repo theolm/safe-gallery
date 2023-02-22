@@ -43,4 +43,7 @@ dependencies {
     kapt(Deps.hiltCompiler)
 
     testImplementation(Deps.junit)
+    testImplementation(Deps.robolectric)
+    testImplementation(Deps.mockk)
+    testImplementation(Deps.coroutinesTest)
 }

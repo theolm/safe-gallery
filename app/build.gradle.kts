@@ -57,7 +57,11 @@ android {
         jniLibs.useLegacyPackaging = true
     }
 
-
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
 }
 
 kotlin {
@@ -115,6 +119,11 @@ dependencies {
 
     implementation(Deps.composeUiToolingPreview)
     debugImplementation(Deps.composeUiTooling)
+
+    testImplementation(Deps.junit)
+    testImplementation(Deps.robolectric)
+    testImplementation(Deps.mockk)
+    testImplementation(Deps.coroutinesTest)
 
 }
 
