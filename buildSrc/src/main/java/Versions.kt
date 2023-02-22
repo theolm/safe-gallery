@@ -21,4 +21,7 @@ object Versions {
     const val composeDestination = "1.8.33-beta"
     const val coil = "2.2.2"
     const val junit = "4.13.2"
+    const val robolectric = "4.9"
+    const val mockk = "1.13.4"
+    const val coroutinesTest = "1.6.4"
 }
