@@ -25,6 +25,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.theolm.core.data.SafePhoto
 import com.theolm.safeGallery.R
 import com.theolm.safeGallery.presentation.ui.components.BottomNavigationHeight
 import com.theolm.safeGallery.presentation.ui.page.destinations.PreviewPageDestination
@@ -100,24 +101,32 @@ fun GalleryPage(
             horizontalArrangement = Arrangement.spacedBy(spaceBetweenCells.dp)
         ) {
             items(photos) { safePhoto ->
-                Image(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(100.dp)
-                        .clickable {
-                            navigator.navigate(
-                                PreviewPageDestination(
-                                    navArgs = PreviewPageNavArgs(
-                                        pageType = PreviewPageType.Photo(safePhoto)
-                                    )
-                                )
+                GalleryTile(photo = safePhoto) {
+                    navigator.navigate(
+                        PreviewPageDestination(
+                            navArgs = PreviewPageNavArgs(
+                                pageType = PreviewPageType.Photo(safePhoto)
                             )
-                        },
-                    painter = rememberAsyncImagePainter(safePhoto.uri),
-                    contentDescription = stringResource(id = R.string.photo),
-                    contentScale = ContentScale.Crop
-                )
+                        )
+                    )
+                }
             }
         }
     }
+}
+
+@Composable
+private fun GalleryTile(
+    photo: SafePhoto,
+    onClick: () -> Unit,
+) {
+    Image(
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(1f)
+            .clickable(onClick = onClick),
+        painter = rememberAsyncImagePainter(photo.uri),
+        contentDescription = stringResource(id = R.string.photo),
+        contentScale = ContentScale.Crop
+    )
 }
