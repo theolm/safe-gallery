@@ -21,6 +21,11 @@ class PreviewPageViewModel @Inject constructor(
         private set
 
 
+    fun onImageClicked() {
+        uiState = uiState.copy(
+            visibleTools = !uiState.visibleTools
+        )
+    }
 
     //TODO: replace return for states and observables
     suspend fun savePhoto() = savePhotoUseCase.invoke(SafePhoto(uiState.uri))
@@ -41,4 +46,5 @@ class PreviewPageViewModel @Inject constructor(
 data class PreviewPageUiState(
     val uri: Uri,
     val type: PreviewPageType,
+    val visibleTools: Boolean = true,
 )
