@@ -1,7 +1,6 @@
 package com.theolm.safeGallery.presentation.ui.page.preview
 
 import android.annotation.SuppressLint
-import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -71,7 +70,7 @@ fun PreviewPage(
                 modifier = Modifier
                     .fillMaxSize()
                     .align(Alignment.Center),
-                painter = rememberAsyncImagePainter(uiState.tempUri),
+                painter = rememberAsyncImagePainter(uiState.uri),
                 contentDescription = stringResource(id = R.string.photo),
                 contentScale = ContentScale.FillWidth
             )
@@ -79,4 +78,6 @@ fun PreviewPage(
     }
 }
 
-data class PreviewPageNavArgs(val tempImageUri: Uri)
+data class PreviewPageNavArgs(
+    val pageType: PreviewPageType,
+)

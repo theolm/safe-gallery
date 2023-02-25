@@ -7,6 +7,8 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.fragment.app.FragmentActivity
 import com.theolm.core.data.LockState
 import com.theolm.safeGallery.presentation.ui.page.home.HomePage
@@ -24,6 +26,13 @@ class MainActivity : FragmentActivity() {
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { v, insets ->
+            v.setPadding(0, 0, 0, 0)
+            insets
+        }
+
         setContent {
             val state by viewModel.lockState.collectAsState(initial = LockState.LOCK)
             AppTheme {

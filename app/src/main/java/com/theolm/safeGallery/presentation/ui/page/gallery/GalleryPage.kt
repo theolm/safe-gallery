@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -28,6 +29,7 @@ import com.theolm.safeGallery.R
 import com.theolm.safeGallery.presentation.ui.components.BottomNavigationHeight
 import com.theolm.safeGallery.presentation.ui.page.destinations.PreviewPageDestination
 import com.theolm.safeGallery.presentation.ui.page.preview.PreviewPageNavArgs
+import com.theolm.safeGallery.presentation.ui.page.preview.PreviewPageType
 
 private const val spaceBetweenCells = 4
 
@@ -45,8 +47,14 @@ fun GalleryPage(
 
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
         if (it) {
-            viewModel.tempUri?.let {
-                navigator.navigate(PreviewPageDestination(navArgs = PreviewPageNavArgs(it)))
+            viewModel.tempUri?.let { newUri ->
+                navigator.navigate(
+                    PreviewPageDestination(
+                        navArgs = PreviewPageNavArgs(
+                            pageType = PreviewPageType.NewPhoto(newUri)
+                        )
+                    )
+                )
             }
         } else {
             navigator.popBackStack()
@@ -91,12 +99,21 @@ fun GalleryPage(
             verticalArrangement = Arrangement.spacedBy(spaceBetweenCells.dp),
             horizontalArrangement = Arrangement.spacedBy(spaceBetweenCells.dp)
         ) {
-            items(photos) {
+            items(photos) { safePhoto ->
                 Image(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(100.dp),
-                    painter = rememberAsyncImagePainter(it.uri),
+                        .height(100.dp)
+                        .clickable {
+                            navigator.navigate(
+                                PreviewPageDestination(
+                                    navArgs = PreviewPageNavArgs(
+                                        pageType = PreviewPageType.Photo(safePhoto)
+                                    )
+                                )
+                            )
+                        },
+                    painter = rememberAsyncImagePainter(safePhoto.uri),
                     contentDescription = stringResource(id = R.string.photo),
                     contentScale = ContentScale.Crop
                 )
