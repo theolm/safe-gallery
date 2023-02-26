@@ -16,6 +16,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
@@ -31,6 +32,7 @@ import com.theolm.safeGallery.presentation.ui.components.BottomNavigationHeight
 import com.theolm.safeGallery.presentation.ui.page.destinations.PreviewPageDestination
 import com.theolm.safeGallery.presentation.ui.page.preview.PreviewPageNavArgs
 import com.theolm.safeGallery.presentation.ui.page.preview.PreviewPageType
+import kotlinx.coroutines.launch
 
 private const val spaceBetweenCells = 4
 
@@ -43,7 +45,7 @@ fun GalleryPage(
     navigator: DestinationsNavigator,
     viewModel: GalleryViewModel = hiltViewModel(),
 ) {
-
+    val scope = rememberCoroutineScope()
     val listState = rememberLazyGridState()
 
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
@@ -72,8 +74,11 @@ fun GalleryPage(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    viewModel.refreshTempFile()
-                    launcher.launch(viewModel.tempUri)
+                    scope.launch {
+                        viewModel.bypassLock()
+                        viewModel.refreshTempFile()
+                        launcher.launch(viewModel.tempUri)
+                    }
                 }
             ) {
                 Icon(
