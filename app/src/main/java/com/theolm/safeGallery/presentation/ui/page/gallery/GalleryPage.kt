@@ -18,6 +18,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -49,16 +50,19 @@ fun GalleryPage(
     val launcher = photoIntentLauncher(navigator, viewModel)
     val scope = rememberCoroutineScope()
     val listState = rememberLazyGridState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val photos by viewModel.photos.collectAsState(initial = listOf())
 
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = BottomNavigationHeight),
+            .padding(bottom = BottomNavigationHeight)
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             LargeTopAppBar(
                 title = { Text(text = stringResource(id = R.string.gallery)) },
+                scrollBehavior = scrollBehavior,
             )
         },
         floatingActionButton = {
