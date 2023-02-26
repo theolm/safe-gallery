@@ -3,7 +3,6 @@
 package com.theolm.safeGallery.presentation.ui.page.preview
 
 import android.annotation.SuppressLint
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -11,21 +10,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.theolm.safeGallery.R
+import com.theolm.safeGallery.presentation.ui.components.ConfirmationAlertDialog
 import com.theolm.safeGallery.presentation.ui.components.ImageZoom
-import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Destination(navArgsDelegate = PreviewPageNavArgs::class)
 @Composable
@@ -35,6 +34,9 @@ fun PreviewPage(
 ) {
 
     val uiState = viewModel.uiState
+
+    DeleteAlert(viewModel = viewModel, showAlert = uiState.showDeleteAlert)
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
@@ -53,12 +55,15 @@ fun PreviewPage(
             onClick = viewModel::onImageClicked
         )
     }
+
+    //Observe close events
+    if (viewModel.closePage) {
+        navigator.popBackStack()
+    }
 }
 
 @Composable
 private fun PreviewTopBar(viewModel: PreviewPageViewModel, onBack: () -> Unit) {
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     val uiState = viewModel.uiState
 
     val containerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.7f)
@@ -95,23 +100,37 @@ private fun PreviewTopBar(viewModel: PreviewPageViewModel, onBack: () -> Unit) {
                             contentColor = contentColor,
                             containerColor = Color.Transparent
                         ),
-                        onClick = {
-                            scope.launch {
-                                val res = viewModel.savePhoto()
-                                if (res) {
-                                    onBack.invoke()
-                                } else {
-                                    Toast.makeText(context, "Erro", Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                        }
+                        onClick = viewModel::savePhoto
                     ) {
                         Text(text = stringResource(id = R.string.save_photo))
+                    }
+                }
+
+                if (uiState.type is PreviewPageType.Photo) {
+                    IconButton(onClick = viewModel::onDeleteClick) {
+                        Icon(
+                            imageVector = Icons.Outlined.Delete,
+                            contentDescription = stringResource(id = R.string.delete_photo)
+                        )
                     }
                 }
             }
         )
     }
+}
+
+@Composable
+private fun DeleteAlert(viewModel: PreviewPageViewModel, showAlert: Boolean) {
+    ConfirmationAlertDialog(
+        showAlert = showAlert,
+        title = stringResource(id = R.string.delete_photo),
+        message = stringResource(id = R.string.delete_photo_message),
+        confirmButton = stringResource(id = R.string.delete),
+        confirmButtonColor = MaterialTheme.colorScheme.error,
+        cancelButton = stringResource(id = R.string.cancel),
+        onDismiss = viewModel::onCloseDeleteAlert,
+        onConfirm = viewModel::onDeleteConfirm
+    )
 }
 
 data class PreviewPageNavArgs(

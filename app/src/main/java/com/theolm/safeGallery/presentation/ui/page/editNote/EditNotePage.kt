@@ -25,9 +25,14 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.theolm.core.data.SafeNote
 import com.theolm.safeGallery.R
+import com.theolm.safeGallery.presentation.ui.components.ConfirmationAlertDialog
 import com.theolm.safeGallery.presentation.ui.page.editNote.components.EditNoteTopBar
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+
+data class EditNotePageNavArgs(
+    val safeNote: SafeNote? = null
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -113,10 +118,6 @@ fun EditNotePage(
     }
 }
 
-data class EditNotePageNavArgs(
-    val safeNote: SafeNote? = null
-)
-
 @Composable
 private fun Placeholder() {
     Text(
@@ -127,44 +128,25 @@ private fun Placeholder() {
     )
 }
 
-
 @Composable
 private fun DeleteDialog(
     viewModel: EditNoteViewModel,
     onDelete: () -> Unit,
 ) {
-    if (viewModel.uiState.showDeleteAlert) {
-        val scope = rememberCoroutineScope()
-        AlertDialog(
-            onDismissRequest = { viewModel.closeDeleteAlert() },
-            title = {
-                Text(text = stringResource(id = R.string.delete_note))
-            },
-            text = {
-                Text(text = stringResource(id = R.string.delete_note_message))
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        scope.launch {
-                            viewModel.onDeleteNote()
-                            onDelete.invoke()
-                        }
-                    }
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.delete),
-                        color = MaterialTheme.colorScheme.error
-                    )
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { viewModel.closeDeleteAlert() }
-                ) {
-                    Text(text = stringResource(id = R.string.cancel))
-                }
+    val scope = rememberCoroutineScope()
+    ConfirmationAlertDialog(
+        showAlert = viewModel.uiState.showDeleteAlert,
+        title = stringResource(id = R.string.delete_note),
+        message = stringResource(id = R.string.delete_note_message),
+        confirmButton = stringResource(id = R.string.delete),
+        confirmButtonColor = MaterialTheme.colorScheme.error,
+        cancelButton = stringResource(id = R.string.cancel),
+        onDismiss = viewModel::closeDeleteAlert,
+        onConfirm = {
+            scope.launch {
+                viewModel.onDeleteNote()
+                onDelete.invoke()
             }
-        )
-    }
+        }
+    )
 }
