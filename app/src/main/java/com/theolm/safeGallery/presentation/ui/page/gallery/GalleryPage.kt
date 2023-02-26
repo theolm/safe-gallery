@@ -11,7 +11,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Camera
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -63,25 +63,24 @@ fun GalleryPage(
             LargeTopAppBar(
                 title = { Text(text = stringResource(id = R.string.gallery)) },
                 scrollBehavior = scrollBehavior,
-            )
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    scope.launch {
-                        viewModel.bypassLock()
-                        viewModel.refreshTempFile()
-                        launcher.launch(viewModel.tempUri)
+                actions = {
+                    IconButton(
+                        onClick = {
+                            scope.launch {
+                                viewModel.bypassLock()
+                                viewModel.refreshTempFile()
+                                launcher.launch(viewModel.tempUri)
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Camera,
+                            contentDescription = stringResource(id = R.string.take_photo)
+                        )
                     }
                 }
-            ) {
-                Icon(
-                    Icons.Outlined.Add,
-                    contentDescription = null
-                )
-            }
+            )
         },
-        floatingActionButtonPosition = FabPosition.End,
     ) {
 
         LazyVerticalGrid(
