@@ -11,13 +11,15 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.AddPhotoAlternate
+import androidx.compose.material.icons.outlined.Camera
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -45,49 +47,52 @@ fun GalleryPage(
     navigator: DestinationsNavigator,
     viewModel: GalleryViewModel = hiltViewModel(),
 ) {
+
+    val launcher = photoIntentLauncher(navigator, viewModel)
     val scope = rememberCoroutineScope()
     val listState = rememberLazyGridState()
-
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
-        if (it) {
-            viewModel.tempUri?.let { newUri ->
-                navigator.navigate(
-                    PreviewPageDestination(
-                        navArgs = PreviewPageNavArgs(
-                            pageType = PreviewPageType.NewPhoto(newUri)
-                        )
-                    )
-                )
-            }
-        } else {
-            navigator.popBackStack()
-        }
-    }
-
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val photos by viewModel.photos.collectAsState(initial = listOf())
 
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = BottomNavigationHeight),
+            .padding(bottom = BottomNavigationHeight)
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = MaterialTheme.colorScheme.background,
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    scope.launch {
-                        viewModel.bypassLock()
-                        viewModel.refreshTempFile()
-                        launcher.launch(viewModel.tempUri)
+        topBar = {
+            LargeTopAppBar(
+                title = { Text(text = stringResource(id = R.string.gallery)) },
+                scrollBehavior = scrollBehavior,
+                actions = {
+                    IconButton(
+                        onClick = {
+                            //TODO: add import photo
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.AddPhotoAlternate,
+                            contentDescription = stringResource(id = R.string.import_photo)
+                        )
+                    }
+
+                    IconButton(
+                        onClick = {
+                            scope.launch {
+                                viewModel.bypassLock()
+                                viewModel.refreshTempFile()
+                                launcher.launch(viewModel.tempUri)
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Camera,
+                            contentDescription = stringResource(id = R.string.take_photo)
+                        )
                     }
                 }
-            ) {
-                Icon(
-                    Icons.Outlined.Add,
-                    contentDescription = null
-                )
-            }
+            )
         },
-        floatingActionButtonPosition = FabPosition.End,
     ) {
 
         LazyVerticalGrid(
@@ -134,4 +139,24 @@ private fun GalleryTile(
         contentDescription = stringResource(id = R.string.photo),
         contentScale = ContentScale.Crop
     )
+}
+
+@Composable
+private fun photoIntentLauncher(
+    navigator: DestinationsNavigator,
+    viewModel: GalleryViewModel
+) = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
+    if (it) {
+        viewModel.tempUri?.let { newUri ->
+            navigator.navigate(
+                PreviewPageDestination(
+                    navArgs = PreviewPageNavArgs(
+                        pageType = PreviewPageType.NewPhoto(newUri)
+                    )
+                )
+            )
+        }
+    } else {
+        navigator.popBackStack()
+    }
 }
