@@ -45,25 +45,10 @@ fun GalleryPage(
     navigator: DestinationsNavigator,
     viewModel: GalleryViewModel = hiltViewModel(),
 ) {
+
+    val launcher = photoIntentLauncher(navigator, viewModel)
     val scope = rememberCoroutineScope()
     val listState = rememberLazyGridState()
-
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
-        if (it) {
-            viewModel.tempUri?.let { newUri ->
-                navigator.navigate(
-                    PreviewPageDestination(
-                        navArgs = PreviewPageNavArgs(
-                            pageType = PreviewPageType.NewPhoto(newUri)
-                        )
-                    )
-                )
-            }
-        } else {
-            navigator.popBackStack()
-        }
-    }
-
     val photos by viewModel.photos.collectAsState(initial = listOf())
 
     Scaffold(
@@ -71,6 +56,11 @@ fun GalleryPage(
             .fillMaxSize()
             .padding(bottom = BottomNavigationHeight),
         containerColor = MaterialTheme.colorScheme.background,
+        topBar = {
+            LargeTopAppBar(
+                title = { Text(text = stringResource(id = R.string.gallery)) },
+            )
+        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
@@ -134,4 +124,24 @@ private fun GalleryTile(
         contentDescription = stringResource(id = R.string.photo),
         contentScale = ContentScale.Crop
     )
+}
+
+@Composable
+private fun photoIntentLauncher(
+    navigator: DestinationsNavigator,
+    viewModel: GalleryViewModel
+) = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
+    if (it) {
+        viewModel.tempUri?.let { newUri ->
+            navigator.navigate(
+                PreviewPageDestination(
+                    navArgs = PreviewPageNavArgs(
+                        pageType = PreviewPageType.NewPhoto(newUri)
+                    )
+                )
+            )
+        }
+    } else {
+        navigator.popBackStack()
+    }
 }

@@ -18,4 +18,6 @@
     <string name="save_photo">Save photo</string>
     <string name="photo">Photo</string>
     <string name="back_button">Back button</string>
+    <string name="take_photo">Take photo</string>
+    <string name="import_photo">Import photo</string>
 </resources>
