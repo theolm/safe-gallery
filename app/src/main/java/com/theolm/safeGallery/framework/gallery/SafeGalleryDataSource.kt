@@ -97,7 +97,10 @@ class SafeGalleryDataSource @Inject constructor(
             emptyList()
         } else {
             files.map {
-                SafePhoto(it.toUri())
+                SafePhoto(
+                    uri = it.toUri(),
+                    lastModified = it.lastModified()
+                )
             }
         }
     }

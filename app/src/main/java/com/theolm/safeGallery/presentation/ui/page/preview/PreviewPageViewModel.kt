@@ -13,6 +13,7 @@ import com.theolm.core.usecase.SavePhotoUseCase
 import com.theolm.safeGallery.presentation.ui.page.destinations.PreviewPageDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -58,7 +59,8 @@ class PreviewPageViewModel @Inject constructor(
 
     fun savePhoto() {
         viewModelScope.launch {
-            savePhotoUseCase.invoke(SafePhoto(uiState.uri))
+            val now = Date().time
+            savePhotoUseCase.invoke(SafePhoto(uiState.uri, now))
             closePage = true
         }
     }

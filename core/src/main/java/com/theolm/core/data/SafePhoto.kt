@@ -6,5 +6,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class SafePhoto(
-    val uri: Uri
+    val uri: Uri,
+    val lastModified: Long,
 ) : Parcelable
