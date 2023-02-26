@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AddPhotoAlternate
 import androidx.compose.material.icons.outlined.Camera
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -64,6 +65,17 @@ fun GalleryPage(
                 title = { Text(text = stringResource(id = R.string.gallery)) },
                 scrollBehavior = scrollBehavior,
                 actions = {
+                    IconButton(
+                        onClick = {
+                            //TODO: add import photo
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.AddPhotoAlternate,
+                            contentDescription = stringResource(id = R.string.import_photo)
+                        )
+                    }
+
                     IconButton(
                         onClick = {
                             scope.launch {
