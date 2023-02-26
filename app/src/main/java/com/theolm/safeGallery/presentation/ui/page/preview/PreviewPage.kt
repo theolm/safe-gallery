@@ -7,22 +7,15 @@ import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -30,6 +23,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.theolm.safeGallery.R
+import com.theolm.safeGallery.presentation.ui.components.ImageZoom
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -52,23 +46,12 @@ fun PreviewPage(
             )
         },
     ) {
-        Box(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            Image(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .align(Alignment.Center)
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = viewModel::onImageClicked
-                    ),
-                painter = rememberAsyncImagePainter(uiState.uri),
-                contentDescription = stringResource(id = R.string.photo),
-                contentScale = ContentScale.FillWidth
-            )
-        }
+        ImageZoom(
+            modifier = Modifier.fillMaxSize(),
+            painter = rememberAsyncImagePainter(uiState.uri),
+            contentDescription = stringResource(id = R.string.photo),
+            onClick = viewModel::onImageClicked
+        )
     }
 }
 
