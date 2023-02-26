@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.FabPosition
-import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.*
@@ -28,7 +26,8 @@ import com.theolm.safeGallery.presentation.ui.page.editNote.EditNotePageNavArgs
 import com.theolm.safeGallery.presentation.ui.page.notes.component.NoteBubble
 import java.util.*
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Destination
 @Composable
 fun NotesPage(
@@ -43,7 +42,7 @@ fun NotesPage(
         modifier = Modifier
             .fillMaxSize()
             .padding(bottom = BottomNavigationHeight),
-        backgroundColor = MaterialTheme.colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.background,
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 expanded = listState.isScrollingUp(),
@@ -62,7 +61,6 @@ fun NotesPage(
             )
         },
         floatingActionButtonPosition = FabPosition.End,
-        isFloatingActionButtonDocked = false
     ) {
         LazyColumn(
             modifier = Modifier

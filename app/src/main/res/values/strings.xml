@@ -11,8 +11,11 @@
     <string name="note_saved">Note saved</string>
     <string name="delete_note">Delete safe note</string>
     <string name="delete_note_message">Are you sure you want to delete the note?</string>
+    <string name="delete_photo_message">Are you sure you want to permanently delete the photo?</string>
     <string name="delete">Delete</string>
+    <string name="delete_photo">Delete photo</string>
     <string name="cancel">Cancel</string>
     <string name="save_photo">Save photo</string>
     <string name="photo">Photo</string>
+    <string name="back_button">Back button</string>
 </resources>

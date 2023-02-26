@@ -20,6 +20,7 @@ object Versions {
     const val kspVersion = "1.7.20-1.0.8"
     const val composeDestination = "1.8.33-beta"
     const val coil = "2.2.2"
+    const val timber = "5.0.1"
     const val junit = "4.13.2"
     const val robolectric = "4.9"
     const val mockk = "1.13.4"

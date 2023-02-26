@@ -102,6 +102,7 @@ dependencies {
     implementation(Deps.composeRuntime)
     implementation(Deps.composeLiveData)
     implementation(Deps.coil)
+    implementation(Deps.timber)
 
     // Hilt
     implementation(Deps.hiltAndroid)

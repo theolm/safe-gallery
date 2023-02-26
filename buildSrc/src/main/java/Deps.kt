@@ -30,6 +30,7 @@ object Deps {
     val composeDestinationCore by lazy { "io.github.raamcosta.compose-destinations:core:${Versions.composeDestination}" }
     val composeDestinationKsp by lazy { "io.github.raamcosta.compose-destinations:ksp:${Versions.composeDestination}" }
     val coil by lazy { "io.coil-kt:coil-compose:${Versions.coil}" }
+    val timber by lazy { "com.jakewharton.timber:timber:${Versions.timber}" }
 
     val composeUiTest by lazy { "androidx.compose.ui:ui-test-junit4" }
     val composeUiTooling by lazy { "androidx.compose.ui:ui-tooling" }

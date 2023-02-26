@@ -1,13 +1,12 @@
 package com.theolm.safeGallery.presentation.ui.page.home
 
 import androidx.annotation.StringRes
-import androidx.compose.material.BottomNavigationDefaults
-import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Message
 import androidx.compose.material.icons.outlined.Photo
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -24,28 +23,24 @@ fun BottomBar(
     onItemClick : (DirectionDestinationSpec) -> Unit,
 ) {
     SafeBottomNavigation(
-        backgroundColor = MaterialTheme.colorScheme.surface,
+        containerColor = MaterialTheme.colorScheme.surface,
         contentColor = MaterialTheme.colorScheme.onSurface,
-        elevation = BottomNavigationDefaults.Elevation,
     ) {
         BottomBarDestination.values().forEach { destination ->
             val selected = currentDestination == destination.direction
-            BottomNavigationItem(
+
+            NavigationBarItem(
                 selected = selected,
-                onClick = {
-                    onItemClick.invoke(destination.direction)
-                },
+                alwaysShowLabel = false,
                 icon = {
                     Icon(
                         imageVector = destination.icon,
                         contentDescription = stringResource(destination.label),
-                        tint = if(selected) {
-                            MaterialTheme.colorScheme.primary
-                        } else  {
-                            MaterialTheme.colorScheme.onSurface
-                        }
                     )
                 },
+                onClick = {
+                    onItemClick.invoke(destination.direction)
+                }
             )
         }
     }

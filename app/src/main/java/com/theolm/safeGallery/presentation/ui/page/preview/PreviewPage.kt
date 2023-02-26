@@ -1,28 +1,28 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.theolm.safeGallery.presentation.ui.page.preview
 
 import android.annotation.SuppressLint
-import android.net.Uri
-import android.widget.Toast
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Save
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.theolm.safeGallery.R
-import kotlinx.coroutines.launch
+import com.theolm.safeGallery.presentation.ui.components.ConfirmationAlertDialog
+import com.theolm.safeGallery.presentation.ui.components.ImageZoom
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -32,51 +32,107 @@ fun PreviewPage(
     navigator: DestinationsNavigator,
     viewModel: PreviewPageViewModel = hiltViewModel(),
 ) {
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
+
     val uiState = viewModel.uiState
 
-    Scaffold(
-        containerColor = Color.Black,
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = {
-                    scope.launch {
-                        val res = viewModel.savePhoto()
-                        if (res) {
-                            navigator.popBackStack()
-                        } else {
-                            Toast.makeText(context, "Erro", Toast.LENGTH_SHORT).show()
-                        }
-                    }
+    DeleteAlert(viewModel = viewModel, showAlert = uiState.showDeleteAlert)
 
-                },
-                icon = {
-                    Icon(
-                        imageVector = Icons.Outlined.Save,
-                        contentDescription = stringResource(id = R.string.save_photo),
-                    )
-                },
-                text = {
-                    Text(stringResource(id = R.string.save_photo))
-                },
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
+        topBar = {
+            PreviewTopBar(
+                viewModel = viewModel,
+                onBack = {
+                    navigator.popBackStack()
+                }
             )
         },
-        floatingActionButtonPosition = FabPosition.Center
     ) {
-        Box(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            Image(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .align(Alignment.Center),
-                painter = rememberAsyncImagePainter(uiState.tempUri),
-                contentDescription = stringResource(id = R.string.photo),
-                contentScale = ContentScale.FillWidth
-            )
-        }
+        ImageZoom(
+            modifier = Modifier.fillMaxSize(),
+            painter = rememberAsyncImagePainter(uiState.uri),
+            contentDescription = stringResource(id = R.string.photo),
+            onClick = viewModel::onImageClicked
+        )
+    }
+
+    //Observe close events
+    if (viewModel.closePage) {
+        navigator.popBackStack()
     }
 }
 
-data class PreviewPageNavArgs(val tempImageUri: Uri)
+@Composable
+private fun PreviewTopBar(viewModel: PreviewPageViewModel, onBack: () -> Unit) {
+    val uiState = viewModel.uiState
+
+    val containerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.7f)
+    val contentColor = MaterialTheme.colorScheme.onBackground
+
+    AnimatedVisibility(
+        visible = uiState.visibleTools,
+        enter = fadeIn(),
+        exit = fadeOut(),
+    ) {
+        TopAppBar(
+            modifier = Modifier.fillMaxWidth(),
+            title = {},
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = containerColor,
+                navigationIconContentColor = contentColor,
+                titleContentColor = contentColor,
+                actionIconContentColor = contentColor
+            ),
+            navigationIcon = {
+                IconButton(
+                    onClick = onBack
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.ArrowBack,
+                        contentDescription = stringResource(id = R.string.back_button)
+                    )
+                }
+            },
+            actions = {
+                if (uiState.type is PreviewPageType.NewPhoto) {
+                    TextButton(
+                        colors = ButtonDefaults.buttonColors(
+                            contentColor = contentColor,
+                            containerColor = Color.Transparent
+                        ),
+                        onClick = viewModel::savePhoto
+                    ) {
+                        Text(text = stringResource(id = R.string.save_photo))
+                    }
+                }
+
+                if (uiState.type is PreviewPageType.Photo) {
+                    IconButton(onClick = viewModel::onDeleteClick) {
+                        Icon(
+                            imageVector = Icons.Outlined.Delete,
+                            contentDescription = stringResource(id = R.string.delete_photo)
+                        )
+                    }
+                }
+            }
+        )
+    }
+}
+
+@Composable
+private fun DeleteAlert(viewModel: PreviewPageViewModel, showAlert: Boolean) {
+    ConfirmationAlertDialog(
+        showAlert = showAlert,
+        title = stringResource(id = R.string.delete_photo),
+        message = stringResource(id = R.string.delete_photo_message),
+        confirmButton = stringResource(id = R.string.delete),
+        confirmButtonColor = MaterialTheme.colorScheme.error,
+        cancelButton = stringResource(id = R.string.cancel),
+        onDismiss = viewModel::onCloseDeleteAlert,
+        onConfirm = viewModel::onDeleteConfirm
+    )
+}
+
+data class PreviewPageNavArgs(
+    val pageType: PreviewPageType,
+)
