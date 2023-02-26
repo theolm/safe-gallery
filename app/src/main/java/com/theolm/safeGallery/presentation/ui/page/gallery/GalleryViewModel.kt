@@ -16,7 +16,7 @@ class GalleryViewModel @Inject constructor(
     getPhotosUseCase: GetPhotosUseCase,
 ) : ViewModel() {
     val photos = getPhotosUseCase().map {
-        it.sortedBy { it.lastModified }
+        it.sortedByDescending { it.lastModified }
     }
 
     var tempUri: Uri? = null
