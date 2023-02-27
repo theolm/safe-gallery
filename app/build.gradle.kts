@@ -131,4 +131,8 @@ dependencies {
 // Allow references to generated code
 kapt {
     correctErrorTypes = true
+
+    arguments {
+        arg("room.schemaLocation", "$projectDir/schemas")
+    }
 }
