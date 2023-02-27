@@ -20,3 +20,11 @@ fun LazyListState.isScrollingUp(): Boolean {
         }
     }.value
 }
+
+@Composable
+fun LazyListState.hasOffset(): Boolean {
+    val offset by remember(this) {
+        derivedStateOf { this.firstVisibleItemScrollOffset }
+    }
+    return offset > 0
+}
