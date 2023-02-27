@@ -1,24 +1,25 @@
 package com.theolm.safeGallery.presentation.ui.page.editNote
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Save
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -26,7 +27,8 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.theolm.core.data.SafeNote
 import com.theolm.safeGallery.R
 import com.theolm.safeGallery.presentation.ui.components.ConfirmationAlertDialog
-import com.theolm.safeGallery.presentation.ui.page.editNote.components.EditNoteTopBar
+import com.theolm.safeGallery.presentation.ui.components.CustomTextField
+import com.theolm.safeGallery.presentation.ui.components.hasOffset
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -45,9 +47,11 @@ fun EditNotePage(
     val uiState = viewModel.uiState
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
-    val topAppBarState = rememberTopAppBarState()
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topAppBarState)
-    val scroll = rememberScrollState()
+    val lazyState = rememberLazyListState()
+
+    val topBarElevation by animateDpAsState(
+        if (lazyState.hasOffset()) 6.dp else 0.dp
+    )
 
     LaunchedEffect(uiState.isEditMode) {
         if (uiState.isEditMode) {
@@ -59,73 +63,81 @@ fun EditNotePage(
         }
     }
 
-    DeleteDialog(viewModel) {
-        navigator.popBackStack()
-    }
+    DeleteDialog(viewModel) { navigator.popBackStack() }
 
     Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.surfaceVariant,
         contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
         topBar = {
-            val scope = rememberCoroutineScope()
             EditNoteTopBar(
-                uiState = uiState,
-                scrollBehavior = scrollBehavior,
-                onBackPress = {
-                    navigator.popBackStack()
-                },
-                onSaveClick = {
-                    scope.launch {
-                        val saved = viewModel.saveNote()
-                        if (saved) navigator.popBackStack()
-                    }
-                },
-                onEditClick = { viewModel.startEditing() },
-                onDeleteClick = { viewModel.startDeleting() }
+                viewModel = viewModel,
+                navigator = navigator,
+                elevation = topBarElevation
             )
         },
     ) {
-        //TODO: change the value from String to TextFieldValue
-        BasicTextField(
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .padding(top = it.calculateTopPadding(), bottom = it.calculateBottomPadding())
-                .verticalScroll(scroll)
-                .focusRequester(focusRequester),
-            value = uiState.note.text,
-            onValueChange = viewModel::onNoteChange,
-            singleLine = false,
-            readOnly = !uiState.isEditMode,
-            textStyle = MaterialTheme.typography.labelLarge.copy(
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            ),
-            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-            decorationBox = { innerTextField ->
-                if (uiState.note.text.isEmpty()) {
-                    Placeholder()
-                } else {
-                    innerTextField()
-                }
-            },
-            keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.Sentences,
-                autoCorrect = true,
-            ),
-        )
-    }
-}
+        LazyColumn(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            state = lazyState,
+            contentPadding = PaddingValues(
+                top = it.calculateTopPadding(),
+                bottom = it.calculateBottomPadding()
+            )
+        ) {
+            //TODO: change the value from String to TextFieldValue
+            item {
+                CustomTextField(
+                    modifier = Modifier.padding(top = 16.dp),
+                    value = uiState.title.text,
+                    onValueChange = viewModel::onTitleChange,
+                    singleLine = false,
+                    readOnly = !uiState.isEditMode,
+                    textStyle = MaterialTheme.typography.headlineLarge.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    ),
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Sentences,
+                        autoCorrect = true,
+                    ),
+                    placeholder = stringResource(id = R.string.message_title)
+                )
+            }
 
-@Composable
-private fun Placeholder() {
-    Text(
-        text = stringResource(id = R.string.placeholder_note_input),
-        style = MaterialTheme.typography.labelLarge.copy(
-            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
-        )
-    )
+            item {
+                CustomTextField(
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                        .focusRequester(focusRequester),
+                    value = uiState.note.text,
+                    onValueChange = viewModel::onNoteChange,
+                    singleLine = false,
+                    readOnly = !uiState.isEditMode,
+                    textStyle = MaterialTheme.typography.labelLarge.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    ),
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Sentences,
+                        autoCorrect = true,
+                    ),
+                    placeholder = stringResource(id = R.string.placeholder_note_input)
+                )
+            }
+
+            item {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                )
+            }
+        }
+    }
+
+    val closeEvent by viewModel.closeEvent.collectAsState(initial = false)
+    if (closeEvent) {
+        navigator.popBackStack()
+    }
 }
 
 @Composable
@@ -149,4 +161,65 @@ private fun DeleteDialog(
             }
         }
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun EditNoteTopBar(
+    viewModel: EditNoteViewModel,
+    navigator: DestinationsNavigator,
+    elevation: Dp,
+) {
+    val uiState = viewModel.uiState
+    val showSaveButton = uiState.isNewNote || uiState.isEditMode
+    val showEditButton = !uiState.isNewNote && !uiState.isEditMode
+    val showDeleteButton = !uiState.isNewNote
+
+    Surface(shadowElevation = elevation) {
+        TopAppBar(
+            title = {},
+            navigationIcon = {
+                IconButton(onClick = { navigator.popBackStack() }) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = stringResource(id = R.string.back_button)
+                    )
+                }
+            },
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                navigationIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                titleContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                actionIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            ),
+            actions = {
+                if (showSaveButton) {
+                    IconButton(onClick = viewModel::saveNote) {
+                        Icon(
+                            imageVector = Icons.Outlined.Save,
+                            contentDescription = stringResource(id = R.string.save_note)
+                        )
+                    }
+                }
+
+                if (showEditButton) {
+                    IconButton(onClick = viewModel::startEditing) {
+                        Icon(
+                            imageVector = Icons.Outlined.Edit,
+                            contentDescription = stringResource(id = R.string.edit_note)
+                        )
+                    }
+                }
+
+                if (showDeleteButton) {
+                    IconButton(onClick = viewModel::startDeleting) {
+                        Icon(
+                            imageVector = Icons.Outlined.Delete,
+                            contentDescription = stringResource(id = R.string.delete_note)
+                        )
+                    }
+                }
+            }
+        )
+    }
 }

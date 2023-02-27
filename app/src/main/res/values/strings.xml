@@ -20,4 +20,5 @@
     <string name="back_button">Back button</string>
     <string name="take_photo">Take photo</string>
     <string name="import_photo">Import photo</string>
+    <string name="message_title">Message title</string>
 </resources>
