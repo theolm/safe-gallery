@@ -16,6 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.Dp
@@ -76,19 +77,21 @@ fun EditNotePage(
             )
         },
     ) {
+        val screenHeight = LocalConfiguration.current.screenHeightDp.dp
         LazyColumn(
-            modifier = Modifier.padding(horizontal = 16.dp),
+            modifier = Modifier.imePadding(),
             state = lazyState,
             contentPadding = PaddingValues(
+                start = 16.dp,
+                end = 16.dp,
                 top = it.calculateTopPadding(),
-                bottom = it.calculateBottomPadding()
+                bottom = it.calculateBottomPadding() + screenHeight.times(0.3f)
             )
         ) {
-            //TODO: change the value from String to TextFieldValue
             item {
                 CustomTextField(
                     modifier = Modifier.padding(top = 16.dp),
-                    value = uiState.title.text,
+                    value = uiState.title,
                     onValueChange = viewModel::onTitleChange,
                     singleLine = false,
                     enabled = uiState.isEditMode,
@@ -107,9 +110,9 @@ fun EditNotePage(
             item {
                 CustomTextField(
                     modifier = Modifier
-                        .padding(top = 16.dp, bottom = 80.dp)
+                        .padding(top = 16.dp)
                         .focusRequester(focusRequester),
-                    value = uiState.note.text,
+                    value = uiState.note,
                     onValueChange = viewModel::onNoteChange,
                     singleLine = false,
                     readOnly = !uiState.isEditMode,

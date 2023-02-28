@@ -6,10 +6,11 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import com.theolm.safeGallery.presentation.ui.theme.PreviewThemeDark
@@ -21,7 +22,7 @@ import com.theolm.safeGallery.presentation.ui.theme.PreviewThemeLight
 private fun PreviewLight() {
     PreviewThemeLight {
         CustomTextField(
-            value = "",
+            value = TextFieldValue(),
             onValueChange = {},
             placeholder = "Message title"
         )
@@ -34,18 +35,17 @@ private fun PreviewLight() {
 private fun PreviewDark() {
     PreviewThemeDark {
         CustomTextField(
-            value = "",
+            value = TextFieldValue(),
             onValueChange = {},
         )
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @ExperimentalMaterial3Api
 @Composable
 fun CustomTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
+    value: TextFieldValue,
+    onValueChange: (TextFieldValue) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
@@ -76,7 +76,7 @@ fun CustomTextField(
             Box {
                 innerTextField()
 
-                if (value.isEmpty() && placeholder != null) {
+                if (value.text.isEmpty() && placeholder != null) {
                     Text(
                         text = placeholder,
                         style = textStyle.copy(

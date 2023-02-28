@@ -4,6 +4,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -54,16 +55,20 @@ class EditNoteViewModel @Inject constructor(
         }
     }
 
-    fun onNoteChange(value: String) {
-        uiState = uiState.copy(note = TextFieldValue(value))
+    fun onNoteChange(value: TextFieldValue) {
+        uiState = uiState.copy(note = value)
     }
 
-    fun onTitleChange(value: String) {
-        uiState = uiState.copy(title = TextFieldValue(value))
+    fun onTitleChange(value: TextFieldValue) {
+        uiState = uiState.copy(title = value)
     }
 
     fun startEditing() {
-        uiState = uiState.copy(isEditMode = true)
+        uiState = uiState.copy(
+            isEditMode = true,
+            title = uiState.title.copy(selection = TextRange(uiState.title.text.length)),
+            note = uiState.note.copy(selection = TextRange(uiState.note.text.length)),
+        )
     }
 
     fun startDeleting() {
