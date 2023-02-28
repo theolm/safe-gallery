@@ -1,5 +1,6 @@
 package com.theolm.safeGallery.presentation.ui.page.editNote
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.theolm.core.data.SafeNote
 import com.theolm.core.usecase.DeleteSafeNoteUseCase
 import com.theolm.core.usecase.SaveSafeNoteUseCase
+import com.theolm.safeGallery.presentation.ui.components.KeyboardManagerState
 import com.theolm.safeGallery.presentation.ui.page.destinations.EditNotePageDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,6 +27,9 @@ class EditNoteViewModel @Inject constructor(
 ) : ViewModel() {
     private val safeNote: SafeNote
     val closeEvent = MutableStateFlow(false)
+    val keyboardEventState = KeyboardManagerState()
+    val snackBarHostState = SnackbarHostState()
+
     var uiState by mutableStateOf(EditNoteUiState())
         private set
 
@@ -76,10 +81,15 @@ class EditNoteViewModel @Inject constructor(
 
     fun saveNote() {
         viewModelScope.launch {
-            uiState = uiState.copy(isEditMode = false)
+            keyboardEventState.closeKeyboard()
 
-            if (uiState.note.text.isBlank() || uiState.title.text.isBlank()) {
-                // TODO: show Snackbar error
+            if (uiState.note.text.isBlank()) {
+                snackBarHostState.showSnackbar("Text missing")
+                return@launch
+            }
+
+            if (uiState.title.text.isBlank()) {
+                snackBarHostState.showSnackbar("Title missing")
                 return@launch
             }
 
@@ -89,6 +99,7 @@ class EditNoteViewModel @Inject constructor(
                 updatedAt = Date().time
             ).also {
                 saveSafeNotesUseCase(it)
+                uiState = uiState.copy(isEditMode = false)
                 closeEvent.emit(true)
             }
         }
