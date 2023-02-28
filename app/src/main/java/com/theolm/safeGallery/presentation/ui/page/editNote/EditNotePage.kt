@@ -16,7 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.Dp
@@ -26,9 +26,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.theolm.core.data.SafeNote
 import com.theolm.safeGallery.R
-import com.theolm.safeGallery.presentation.ui.components.ConfirmationAlertDialog
-import com.theolm.safeGallery.presentation.ui.components.CustomTextField
-import com.theolm.safeGallery.presentation.ui.components.hasOffset
+import com.theolm.safeGallery.presentation.ui.components.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -46,12 +44,13 @@ fun EditNotePage(
 ) {
     val uiState = viewModel.uiState
     val focusRequester = remember { FocusRequester() }
-    val focusManager = LocalFocusManager.current
     val lazyState = rememberLazyListState()
 
     val topBarElevation by animateDpAsState(
         if (lazyState.hasOffset()) 6.dp else 0.dp
     )
+
+    KeyboardManager(viewModel.keyboardEventState)
 
     LaunchedEffect(uiState.isEditMode) {
         if (uiState.isEditMode) {
@@ -59,7 +58,7 @@ fun EditNotePage(
             delay(100)
             focusRequester.requestFocus()
         } else {
-            focusManager.clearFocus()
+            viewModel.keyboardEventState.closeKeyboard()
         }
     }
 
@@ -69,6 +68,7 @@ fun EditNotePage(
         modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.surfaceVariant,
         contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        snackbarHost = { SnackbarHost(viewModel.snackBarHostState) },
         topBar = {
             EditNoteTopBar(
                 viewModel = viewModel,
@@ -77,21 +77,24 @@ fun EditNotePage(
             )
         },
     ) {
+        val screenHeight = LocalConfiguration.current.screenHeightDp.dp
         LazyColumn(
-            modifier = Modifier.padding(horizontal = 16.dp),
+            modifier = Modifier.imePadding(),
             state = lazyState,
             contentPadding = PaddingValues(
+                start = 16.dp,
+                end = 16.dp,
                 top = it.calculateTopPadding(),
-                bottom = it.calculateBottomPadding()
+                bottom = it.calculateBottomPadding() + screenHeight.times(0.3f)
             )
         ) {
-            //TODO: change the value from String to TextFieldValue
             item {
                 CustomTextField(
                     modifier = Modifier.padding(top = 16.dp),
-                    value = uiState.title.text,
+                    value = uiState.title,
                     onValueChange = viewModel::onTitleChange,
                     singleLine = false,
+                    enabled = uiState.isEditMode,
                     readOnly = !uiState.isEditMode,
                     textStyle = MaterialTheme.typography.headlineLarge.copy(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -109,10 +112,11 @@ fun EditNotePage(
                     modifier = Modifier
                         .padding(top = 16.dp)
                         .focusRequester(focusRequester),
-                    value = uiState.note.text,
+                    value = uiState.note,
                     onValueChange = viewModel::onNoteChange,
                     singleLine = false,
                     readOnly = !uiState.isEditMode,
+                    enabled = uiState.isEditMode,
                     textStyle = MaterialTheme.typography.labelLarge.copy(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     ),
@@ -121,14 +125,6 @@ fun EditNotePage(
                         autoCorrect = true,
                     ),
                     placeholder = stringResource(id = R.string.placeholder_note_input)
-                )
-            }
-
-            item {
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(50.dp)
                 )
             }
         }

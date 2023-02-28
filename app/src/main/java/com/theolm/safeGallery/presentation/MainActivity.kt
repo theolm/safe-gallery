@@ -11,6 +11,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.FragmentActivity
 import com.theolm.core.data.LockState
+import com.theolm.safeGallery.BuildConfig
 import com.theolm.safeGallery.presentation.ui.page.home.HomePage
 import com.theolm.safeGallery.presentation.ui.page.lock.LockedPage
 import com.theolm.safeGallery.presentation.ui.theme.AppTheme
@@ -37,7 +38,7 @@ class MainActivity : FragmentActivity() {
             val state by viewModel.lockState.collectAsState(initial = LockState.LOCK)
             AppTheme {
                 AnimatedContent(targetState = state) {
-                    if (it == LockState.UNLOCK) {
+                    if (it == LockState.UNLOCK || bypassLock()) {
                         HomePage()
                     } else {
                         LockedPage()
@@ -47,10 +48,16 @@ class MainActivity : FragmentActivity() {
         }
     }
 
+    private fun bypassLock() : Boolean = BuildConfig.DEBUG && bypassFlag
+
     override fun onPause() {
         super.onPause()
         scope.launch {
             viewModel.lockApp()
         }
+    }
+
+    private companion object {
+        const val bypassFlag = true
     }
 }
