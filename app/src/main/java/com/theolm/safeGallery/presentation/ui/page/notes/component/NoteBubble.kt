@@ -28,14 +28,18 @@ private const val mockNote =
             "efficitur libero vel, ornare ex. Cras aliquet ex vitae faucibus fermentum. " +
             "Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus."
 
+
 private const val maxLines = 10000
 private const val minLines = 4
+private const val titleMaxLines = 10000
+private const val titleMinLines = 2
 
 @Preview
 @Composable
 private fun PreviewLight() {
     PreviewThemeLight {
         NoteBubble(
+            title = mockNote,
             note = mockNote,
             lastModified = Date(),
         )
@@ -47,6 +51,7 @@ private fun PreviewLight() {
 private fun PreviewDark() {
     PreviewThemeDark {
         NoteBubble(
+            title = mockNote,
             note = mockNote,
             lastModified = Date(),
         )
@@ -57,6 +62,7 @@ private fun PreviewDark() {
 @Composable
 fun NoteBubble(
     modifier: Modifier = Modifier,
+    title: String,
     note: String,
     lastModified: Date,
     onClick: () -> Unit = {},
@@ -64,6 +70,7 @@ fun NoteBubble(
     var isExpanded by rememberSaveable { mutableStateOf(false) }
     val elevation by animateDpAsState(targetValue = if (isExpanded) 4.dp else 0.dp)
     val maxLines by animateIntAsState(targetValue = if (isExpanded) maxLines else minLines)
+    val titleMaxLines by animateIntAsState(targetValue = if (isExpanded) titleMaxLines else titleMinLines)
     val verticalPadding by animateDpAsState(targetValue = if (isExpanded) 8.dp else 4.dp)
 
     Card(
@@ -89,6 +96,16 @@ fun NoteBubble(
             Column(Modifier.padding(16.dp)) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
+                    text = title,
+                    style = MaterialTheme.typography.headlineSmall,
+                    maxLines = titleMaxLines,
+                    overflow = TextOverflow.Ellipsis,
+                )
+
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
                     text = note,
                     style = MaterialTheme.typography.bodyLarge,
                     maxLines = maxLines,

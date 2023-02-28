@@ -77,6 +77,7 @@ fun NotesPage(
             items(noteList) {
                 NoteBubble(
                     modifier = Modifier.fillMaxWidth(),
+                    title = it.title,
                     note = it.note,
                     lastModified = Date(it.updatedAt),
                     onClick = {
